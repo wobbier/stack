@@ -1,0 +1,35 @@
+version: 0.0.{build}
+os: Visual Studio 2017
+    
+build:
+  project: Stack.sln
+  parallel: true
+  verbosity: normal
+branches:
+  only:
+    - master
+configuration:
+ - Debug
+ - Release
+before_build:
+  - git submodule init
+  - git submodule update
+  - cd Engine
+  - git submodule init
+  - git submodule update
+  - cd ../
+  - ./GenerateSolution.bat
+  - ./CopyAssets.bat
+  - cd Engine/ThirdParty
+  - ./GenerateSolutions.bat
+  - cd ../../
+  - nuget restore
+after_build:
+  - mkdir _Artifacts
+  - xcopy /y /d /s Build\%CONFIGURATION%\Assets _Artifacts\Assets\
+  - xcopy /y /d %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\*.dll %APPVEYOR_BUILD_FOLDER%\_Artifacts
+  - xcopy /y /d %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\*.exe %APPVEYOR_BUILD_FOLDER%\_Artifacts
+  - 7z a %APPVEYOR_BUILD_FOLDER%\Stack_%APPVEYOR_REPO_BRANCH%_%APPVEYOR_BUILD_VERSION%_%CONFIGURATION%.zip _Artifacts
+  
+artifacts:
+- path: Stack_$(appveyor_repo_branch)_$(appveyor_build_version)_$(configuration).zip
