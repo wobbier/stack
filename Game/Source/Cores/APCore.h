@@ -124,6 +124,10 @@ public:
 private:
 	virtual void Init() final
 	{
+	}
+
+	virtual void OnStart() override
+	{
 		m_currentBlock = GetWorld().CreateEntity().lock();
 		Transform& transform = m_currentBlock->AddComponent<Transform>();
 		Vector3 scale = transform.GetScale();
@@ -134,6 +138,7 @@ private:
 		m_currentBlock->AddComponent<StackBlock>();
 		m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
 	}
+
 	SharedPtr<Entity> m_currentBlock;
 	Vector3 m_currentPosition;
 };
