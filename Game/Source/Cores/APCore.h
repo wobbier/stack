@@ -129,7 +129,7 @@ private:
 	virtual void OnStart() override
 	{
 		m_currentBlock = GetWorld().CreateEntity().lock();
-		Transform& transform = m_currentBlock->AddComponent<Transform>();
+		Transform& transform = m_currentBlock->AddComponent<Transform>("Root StackBlock");
 		Vector3 scale = transform.GetScale();
 		scale.SetX(2.f);
 		scale.SetY(0.2f);
