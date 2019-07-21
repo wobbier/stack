@@ -32,7 +32,7 @@ public:
 
 	virtual void OnEditorInspect() override
 	{
-		ImGui::Checkbox("Movement Axis Z", &LeftSideBlock);
+		ImGui::Checkbox("Movement Axis Z", &MoveOnX);
 		ImGui::Checkbox("Block Direction", &BlockDirection);
 		ImGui::DragFloat("Movement Speed", &BlockMoveSpeed);
 	}
@@ -43,7 +43,7 @@ public:
 
 	float BlockMoveSpeed = 2.0f;
 
-	bool LeftSideBlock = false;
+	bool MoveOnX = false;
 	bool BlockDirection = false;
 
 	Vector3 Color;
@@ -54,7 +54,9 @@ ME_REGISTER_COMPONENT(StackBlock)
 class APCore final
 	: public Core<APCore>
 {
+	const float kErrorMargin = 0.1f;
 	const float kStartDistance = 5.0f;
+	const float kBoundsLimit = 4.f;
 public:
 	APCore();
 
@@ -76,12 +78,14 @@ private:
 	SharedPtr<Entity> m_previousBlock;
 	SharedPtr<Entity> m_mainCamera;
 	Vector3 m_currentPosition;
-	Vector2 GridSnapSize;
+	Vector3 m_currentStackSize;
+	Vector2 m_gridSnapSize;
 	float m_startTime = 0.f;
-	float totalTime;
-	float TravelDistance;
-	float FocusSpeed = 2.f;
-	float CameraHeightOffset = 5.f;
-	bool KeyPressed = false;
+	float m_totalTime = 0.f;
+	float m_cameraTravelDistance;
+	float m_cameraFocusSpeed = 2.f;
+	float m_cameraHeightOffset = 5.f;
+	bool m_isKeyPressed = false;
+	float m_fracJourney = 0.f;
 };
 ME_REGISTER_CORE(APCore)

@@ -2,7 +2,8 @@
 
 APCore::APCore()
 	: Base(ComponentFilter().Requires<Transform>().Requires<StackBlock>())
-	, GridSnapSize(5.f, 5.f)
+	, m_gridSnapSize(kStartDistance, kStartDistance)
+	, m_currentStackSize(2.f, 2.f, 2.f)
 {
 
 }
@@ -20,8 +21,8 @@ void APCore::OnEntityRemoved(Entity& InEntity)
 void APCore::OnEditorInspect()
 {
 	Base::OnEditorInspect();
-	ImGui::DragFloat("Camera Height Offset", &CameraHeightOffset);
-	ImGui::DragFloat2("Grid Size", &GridSnapSize.GetInternalVec()[0]);
+	ImGui::DragFloat("Camera Height Offset", &m_cameraHeightOffset);
+	ImGui::DragFloat2("Grid Size", &m_gridSnapSize.GetInternalVec()[0]);
 }
 
 void APCore::Update(float dt)
@@ -29,7 +30,7 @@ void APCore::Update(float dt)
 	Transform& transform = m_currentBlock->GetComponent<Transform>();
 	StackBlock& block = m_currentBlock->GetComponent<StackBlock>();
 	m_currentPosition = transform.GetPosition();
-	if (block.LeftSideBlock)
+	if (!block.MoveOnX)
 	{
 		if (block.BlockDirection)
 		{
@@ -82,23 +83,23 @@ void APCore::Update(float dt)
 	}
 	transform.SetPosition(m_currentPosition);
 
-	totalTime += dt;
-	float distCovered = (totalTime - m_startTime) * FocusSpeed;
-	float fracJourney = distCovered / TravelDistance;
+	m_totalTime += dt;
+	float distCovered = (m_totalTime - m_startTime) * m_cameraFocusSpeed;
+	m_fracJourney = distCovered / m_cameraTravelDistance;
 
 	Transform& camTransform = m_mainCamera->GetComponent<Transform>();
-	if (fracJourney < 1.0f)
+	if (m_fracJourney < 1.0f)
 	{
-		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.Position.X(), m_currentPosition.Y() + CameraHeightOffset, camTransform.Position.Z()), fracJourney));
+		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.Position.X(), m_currentPosition.Y() + m_cameraHeightOffset, camTransform.Position.Z()), m_fracJourney));
 	}
 
-	if (!KeyPressed && Input::GetInstance().IsKeyDown(KeyCode::Space))
+	if (!m_isKeyPressed && Input::GetInstance().IsKeyDown(KeyCode::Space))
 	{
 		EndBlock();
 		SpawnNextBlock();
-		KeyPressed = false;
+		m_isKeyPressed = false;
 	}
-	KeyPressed = Input::GetInstance().IsKeyDown(KeyCode::Space);
+	m_isKeyPressed = Input::GetInstance().IsKeyDown(KeyCode::Space);
 }
 
 void APCore::Init()
@@ -110,11 +111,7 @@ void APCore::OnStart()
 {
 	m_currentBlock = GetWorld().CreateEntity().lock();
 	Transform& prevTransform = m_currentBlock->AddComponent<Transform>("Root StackBlock");
-	Vector3 prevScale = prevTransform.GetScale();
-	prevScale.SetX(2.f);
-	prevScale.SetY(2.f);
-	prevScale.SetZ(2.f);
-	prevTransform.SetScale(prevScale);
+	prevTransform.SetScale(m_currentStackSize);
 	StackBlock& prevBlock = m_currentBlock->AddComponent<StackBlock>();
 	prevBlock.BlockMoveSpeed = 0.f;
 	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
@@ -139,14 +136,11 @@ void APCore::SpawnNextBlock()
 	StackBlock& block = m_currentBlock->AddComponent<StackBlock>();
 	Model& model = m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
 
-	Vector3 scale = transform.GetScale();
-	scale.SetX(prevScale.X());
-	scale.SetY(.3f);
-	scale.SetZ(prevScale.Z());
-	transform.SetScale(scale);
+	m_currentStackSize.SetY(.3f);
+	transform.SetScale(m_currentStackSize);
 
-	block.LeftSideBlock = !prevBlock.LeftSideBlock;
-	if (block.LeftSideBlock)
+	block.MoveOnX = !prevBlock.MoveOnX;
+	if (!block.MoveOnX)
 	{
 		transform.SetPosition(prevTransform.Position + Vector3(0.f, (prevTransform.GetScale().Y()) + (.3f), -kStartDistance));
 		block.BlockDirection = !block.BlockDirection;
@@ -172,9 +166,9 @@ void APCore::SpawnNextBlock()
 		m_startTime = 0.f;
 
 		// Calculate the journey length.
-		TravelDistance = (prevTransform.GetPosition() - transform.GetPosition()).Length();
+		m_cameraTravelDistance = (prevTransform.GetPosition() - transform.GetPosition()).Length();
 
-		totalTime = 0.f;
+		m_totalTime = 0.f;
 	}
 }
 
@@ -199,42 +193,73 @@ void APCore::EndBlock()
 	Transform& transform = m_currentBlock->GetComponent<Transform>();
 	StackBlock& block = m_currentBlock->GetComponent<StackBlock>();
 	Vector3& pos = transform.GetPosition();
-	pos.SetX(Mathf::Round(pos.X() * GridSnapSize.X()) / GridSnapSize.X());
-	pos.SetZ(Mathf::Round(pos.Z() * GridSnapSize.Y()) / GridSnapSize.Y());
 
-	if (!block.LeftSideBlock)
+	if (block.MoveOnX)
 	{
-		float distanceFailedX = pos.X() - prevPos.X();
-		if (distanceFailedX != 0.f)
+		float distanceFailedX = prevPos.X() - pos.X();
+		float distAbs = Mathf::Abs(distanceFailedX);
+		if (distAbs > kErrorMargin)
 		{
-			float distAbs = Mathf::Abs(distanceFailedX);
-			Vector3 scale = transform.GetScale();
-			float scaleThing = prevTransform.GetScale().X() - (distAbs / 2.f);
-			scale.SetX(scaleThing);
-			pos.SetX(pos.X() - (distanceFailedX / 2.f));
-			if (scale.X() < 0.f)
+			float scaleThing = m_currentStackSize.X() - (distAbs / 2.f);
+			m_currentStackSize.SetX(scaleThing);
+
+			if (m_currentStackSize.X() <= 0.f)
 			{
-				scale.SetX(2.f);
+				m_currentStackSize.SetX(2.f);
+				m_currentStackSize.SetZ(2.f);
+				transform.SetScale(m_currentStackSize);
+				BRUH("You Lost!");
+				return;
 			}
-			transform.SetScale(scale);
+			transform.SetScale(m_currentStackSize);
+
+			float middle = prevTransform.GetPosition().X() + (transform.GetPosition().X() / 2.f);
+
+			pos.SetX(middle - (prevTransform.GetPosition().X() / 2.f));
+			pos.SetZ(prevTransform.GetPosition().Z());
+		}
+		else
+		{
+			if (m_currentStackSize.X() > kBoundsLimit)
+			{
+				m_currentStackSize.SetX(2.f);
+			}
+			pos.SetX(prevPos.X());
+			pos.SetZ(prevPos.Z());
 		}
 	}
 	else
 	{
-
-		float distanceFailedZ = pos.Z() - prevPos.Z();
-		if (distanceFailedZ != 0.f)
+		float distanceFailedZ = prevPos.Z() - pos.Z();
+		float distAbs = Mathf::Abs(distanceFailedZ);
+		if (distAbs > kErrorMargin)
 		{
-			float distAbs = Mathf::Abs(distanceFailedZ);
-			Vector3 scale = transform.GetScale();
-			float scaleThing = prevTransform.GetScale().Z() - (distAbs / 2.f);
-			scale.SetZ(scaleThing);
-			pos.SetZ(pos.Z() - (distanceFailedZ / 2.f));
-			if (scale.Z() < 0.f)
+			float scaleThing = m_currentStackSize.Z() - (distAbs / 2.f);
+			m_currentStackSize.SetZ(scaleThing);
+
+			if (m_currentStackSize.Z() <= 0.f)
 			{
-				scale.SetZ(2.f);
+				m_currentStackSize.SetX(2.f);
+				m_currentStackSize.SetZ(2.f);
+				transform.SetScale(m_currentStackSize);
+				BRUH("You Lost!");
+				return;
 			}
-			transform.SetScale(scale);
+			transform.SetScale(m_currentStackSize);
+
+			float middle = prevTransform.GetPosition().Z() + (transform.GetPosition().Z() / 2.f);
+
+			pos.SetZ(middle - (prevTransform.GetPosition().Z() / 2.f));
+			pos.SetX(prevTransform.GetPosition().X());
+		}
+		else
+		{
+			if (m_currentStackSize.Z() > kBoundsLimit)
+			{
+				m_currentStackSize.SetZ(2.f);
+			}
+			pos.SetX(prevPos.X());
+			pos.SetZ(prevPos.Z());
 		}
 	}
 
