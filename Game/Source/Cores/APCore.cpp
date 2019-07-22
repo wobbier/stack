@@ -1,4 +1,5 @@
 #include "APCore.h"
+#include "Components/Physics/Rigidbody.h"
 
 APCore::APCore()
 	: Base(ComponentFilter().Requires<Transform>().Requires<StackBlock>())
@@ -215,8 +216,11 @@ void APCore::EndBlock()
 
 			float middle = prevTransform.GetPosition().X() + (transform.GetPosition().X() / 2.f);
 
-			pos.SetX(middle - (prevTransform.GetPosition().X() / 2.f));
 			pos.SetZ(prevTransform.GetPosition().Z());
+
+			pos.SetX((transform.GetPosition().X() + (scaleThing / 2.f)));
+			CreateBrokenPiece((distAbs / 2.f), pos);
+			pos.SetX(middle - (prevTransform.GetPosition().X() / 2.f));
 		}
 		else
 		{
@@ -247,10 +251,15 @@ void APCore::EndBlock()
 			}
 			transform.SetScale(m_currentStackSize);
 
+
+
 			float middle = prevTransform.GetPosition().Z() + (transform.GetPosition().Z() / 2.f);
 
-			pos.SetZ(middle - (prevTransform.GetPosition().Z() / 2.f));
 			pos.SetX(prevTransform.GetPosition().X());
+			pos.SetZ((transform.GetPosition().Z() + (scaleThing / 2.f)));
+			CreateBrokenPiece((distAbs / 2.f), pos);
+
+			pos.SetZ(middle - (prevTransform.GetPosition().Z() / 2.f));
 		}
 		else
 		{
@@ -264,4 +273,37 @@ void APCore::EndBlock()
 	}
 
 	transform.SetPosition(pos);
+}
+
+void APCore::CreateBrokenPiece(float amountLost, Vector3 something)
+{
+	StackBlock block = m_currentBlock->GetComponent<StackBlock>();
+
+	SharedPtr<Entity> broken = GetWorld().CreateEntity().lock();
+	Transform& transform = broken->AddComponent<Transform>("Broken Piece " + std::to_string(GetEntities().size()));
+	Vector3 stack = m_currentStackSize;
+	if (block.MoveOnX)
+	{
+		stack.SetX(amountLost);
+	}
+	else
+	{
+		stack.SetZ(amountLost);
+	}
+	transform.SetPosition(something);
+	transform.SetScale(stack);
+	broken->AddComponent<Model>("Assets/Cube.fbx");
+	Rigidbody& rigidbody = broken->AddComponent<Rigidbody>(Rigidbody::ColliderType::Box);
+	rigidbody.SetScale(stack);
+	for (Transform* child : transform.GetChildren())
+	{
+		child->Reset();
+		WeakPtr<Entity> ent = GetWorld().GetEntity(child->Parent);
+		if (ent.lock()->HasComponent<Mesh>())
+		{
+			Mesh& mesh = ent.lock()->GetComponent<Mesh>();
+			mesh.MeshMaterial->DiffuseColor.SetX(block.Color.X());
+			block.Color = mesh.MeshMaterial->DiffuseColor;
+		}
+	}
 }

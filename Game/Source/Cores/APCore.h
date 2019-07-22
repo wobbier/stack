@@ -71,6 +71,7 @@ private:
 	virtual void OnStart() override;
 
 	void SpawnNextBlock();
+	void CreateBrokenPiece(float amountLost, Vector3 something);
 	void SetupCamera();
 	void EndBlock();
 
