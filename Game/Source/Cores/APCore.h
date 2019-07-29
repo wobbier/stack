@@ -69,11 +69,14 @@ public:
 private:
 	virtual void Init() final;
 	virtual void OnStart() override;
+	virtual void OnStop() override;
 
 	void SpawnNextBlock();
 	void CreateBrokenPiece(float amountLost, Vector3 something);
 	void SetupCamera();
 	void EndBlock();
+
+	void Reset(Transform& transform);
 
 	SharedPtr<Entity> m_currentBlock;
 	SharedPtr<Entity> m_previousBlock;
@@ -81,6 +84,7 @@ private:
 	Vector3 m_currentPosition;
 	Vector3 m_currentStackSize;
 	Vector2 m_gridSnapSize;
+	Vector3 m_colorStep;
 	float m_startTime = 0.f;
 	float m_totalTime = 0.f;
 	float m_cameraTravelDistance;

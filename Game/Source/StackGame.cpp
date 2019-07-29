@@ -38,22 +38,22 @@ void StackGame::OnStart()
 
 	MainCamera = GameWorld->CreateEntity();
 	Transform& CameraPos = MainCamera.lock()->AddComponent<Transform>("Main Camera");
-	CameraPos.SetPosition(glm::vec3(0, 5, 20));
+	CameraPos.SetPosition(Vector3(0, 5, 20));
 	Camera& cam = MainCamera.lock()->AddComponent<Camera>();
 	MainCamera.lock()->AddComponent<FlyingCamera>();
 	MainCamera.lock()->AddComponent<Light>();
 
 	SecondaryCamera = GameWorld->CreateEntity();
 	Transform& SecondaryPos = SecondaryCamera.lock()->AddComponent<Transform>("Secondary Camera");
-	SecondaryPos.SetPosition(glm::vec3(0, 5, 20));
+	SecondaryPos.SetPosition(Vector3(0, 5, 20));
 	SecondaryCamera.lock()->AddComponent<Camera>();
 	SecondaryCamera.lock()->AddComponent<Light>();
 	SecondaryCamera.lock()->AddComponent<FlyingCamera>();
 
 	auto TestModel = GameWorld->CreateEntity();
 	Transform& ModelTransform = TestModel.lock()->AddComponent<Transform>("Sponza");
-	ModelTransform.SetPosition(glm::vec3(0.f, 0.f, 0.f));
-	ModelTransform.SetScale(glm::vec3(.1f, .1f, .1f));
+	ModelTransform.SetPosition(Vector3(0.f, 0.f, 0.f));
+	ModelTransform.SetScale(Vector3(.1f, .1f, .1f));
 	//TestModel.lock()->AddComponent<Rigidbody>();
 	//TestModel.lock()->AddComponent<Model>("Assets/ExampleAssets/Models/Hammer.fbx");
 	TestModel.lock()->AddComponent<Model>("Assets/Craftsman/Craftsman.fbx");
