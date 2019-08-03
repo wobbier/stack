@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	float BlockMoveSpeed = 2.0f;
+	float BlockMoveSpeed = 4.0f;
 
 	bool MoveOnX = false;
 	bool BlockDirection = false;

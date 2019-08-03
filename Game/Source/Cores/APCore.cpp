@@ -188,7 +188,7 @@ void APCore::SpawnNextBlock()
 		{
 			Mesh& mesh = ent.lock()->GetComponent<Mesh>();
 			Vector3 newColor = (prevBlock.Color + m_colorStep);
-			if (newColor[0] > 1.f || newColor[0] < 0.f)
+			if (newColor[0] > 0.9f || newColor[0] < 0.1f)
 			{
 				m_colorStep = Vector3((std::rand() % 255) / 255.f, (std::rand() % 255) / 255.f, (std::rand() % 255) / 255.f) * .1f;
 			}
@@ -272,6 +272,7 @@ void APCore::EndBlock()
 		if (distAbs > kErrorMargin)
 		{
 			float scaleThing = m_currentStackSize.Z() - (distAbs / 2.f);
+			float remaining = m_currentStackSize.Z() - scaleThing;
 			m_currentStackSize.SetZ(scaleThing);
 
 			if (m_currentStackSize.Z() <= 0.f)
@@ -286,11 +287,16 @@ void APCore::EndBlock()
 			float finalPosZ = middle - (prevTransform.GetPosition().Z() / 2.f);
 
 			pos.SetX(prevTransform.GetPosition().X());
-			if (block.BlockDirection)
+			float direction = finalPosZ - prevTransform.GetPosition().Z();
+			if (direction > 0)
 			{
-				pos.SetZ(((finalPosZ + (transform.GetScale().Z() / 2.f)) - (distanceFailedZ / 2.f)));
+				pos.SetZ(finalPosZ + transform.GetScale().Z() + remaining);
 			}
-			CreateBrokenPiece((distanceFailedZ / 2.f), pos);
+			else
+			{
+				pos.SetZ(finalPosZ - transform.GetScale().Z() - remaining);
+			}
+			CreateBrokenPiece(remaining, pos);
 
 			pos.SetZ(finalPosZ);
 		}
