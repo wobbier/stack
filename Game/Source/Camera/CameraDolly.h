@@ -14,11 +14,11 @@ public:
 	virtual void Deserialize(const json& inJson) override
 	{
 	}
-
+#if ME_EDITOR
 	virtual void OnEditorInspect() override
 	{
 	}
-
+#endif
 	virtual void Init() override
 	{
 	}
@@ -42,10 +42,12 @@ public:
 	{
 	}
 
+#if ME_EDITOR
 	virtual void OnEditorInspect() override
 	{
 		Base::OnEditorInspect();
 	}
+#endif
 
 	virtual void Update(float dt) override
 	{

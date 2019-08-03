@@ -21,12 +21,14 @@ void APCore::OnEntityRemoved(Entity& InEntity)
 
 }
 
+#if ME_EDITOR
 void APCore::OnEditorInspect()
 {
 	Base::OnEditorInspect();
 	ImGui::DragFloat("Camera Height Offset", &m_cameraHeightOffset);
 	ImGui::DragFloat2("Grid Size", &m_gridSnapSize[0]);
 }
+#endif
 
 void APCore::Update(float dt)
 {

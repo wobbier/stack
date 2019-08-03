@@ -18,10 +18,4 @@ public:
 	virtual void OnEnd() override;
 
 	virtual void PostRender() override;
-
-	class FlyingCameraCore* FlyingCameraController = nullptr;
-	class PhysicsCore* Physics = nullptr;
-
-	WeakPtr<Entity> MainCamera;
-	WeakPtr<Entity> SecondaryCamera;
 };

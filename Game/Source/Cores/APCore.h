@@ -30,13 +30,14 @@ public:
 	{
 	}
 
+#if ME_EDITOR
 	virtual void OnEditorInspect() override
 	{
 		ImGui::Checkbox("Movement Axis Z", &MoveOnX);
 		ImGui::Checkbox("Block Direction", &BlockDirection);
 		ImGui::DragFloat("Movement Speed", &BlockMoveSpeed);
 	}
-
+#endif
 	virtual void Init() override
 	{
 	}
@@ -62,7 +63,9 @@ public:
 
 	virtual void OnEntityAdded(Entity& NewEntity) final;
 	virtual void OnEntityRemoved(Entity& InEntity) final;
+#if ME_EDITOR
 	virtual void OnEditorInspect() final;
+#endif
 
 	virtual void Update(float dt) final;
 
