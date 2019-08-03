@@ -170,7 +170,7 @@ void APCore::SpawnNextBlock()
 	m_currentStackSize.SetY(.3f);
 	transform.SetScale(m_currentStackSize);
 
-	//block.MoveOnX = !prevBlock.MoveOnX;
+	block.MoveOnX = !prevBlock.MoveOnX;
 	if (!block.MoveOnX)
 	{
 		transform.SetPosition(prevTransform.Position + Vector3(0.f, (prevTransform.GetScale().Y()) + (.3f), -kStartDistance));
@@ -237,6 +237,7 @@ void APCore::EndBlock()
 		if (distAbs > kErrorMargin)
 		{
 			float scaleThing = m_currentStackSize.X() - (distAbs / 2.f);
+			float remaining = m_currentStackSize.X() - scaleThing;
 			m_currentStackSize.SetX(scaleThing);
 
 			if (m_currentStackSize.X() <= 0.f)
@@ -247,13 +248,22 @@ void APCore::EndBlock()
 			transform.SetScale(m_currentStackSize);
 
 			float middle = prevTransform.GetPosition().X() + (transform.GetPosition().X() / 2.f);
+			float finalPosX = middle - (prevTransform.GetPosition().X() / 2.f);
 
 			pos.SetZ(prevTransform.GetPosition().Z());
 
-			pos.SetX(middle + ((transform.GetPosition().X() / 2.f) + (scaleThing / 2.f)));
-			//pos.SetX((transform.GetPosition().X() + (scaleThing / 2.f)));
-			CreateBrokenPiece((distanceFailedX / 2.f), pos);
-			pos.SetX(middle - (prevTransform.GetPosition().X() / 2.f));
+			float direction = finalPosX - prevTransform.GetPosition().X();
+			if (direction > 0)
+			{
+				pos.SetX(finalPosX + transform.GetScale().X() + remaining);
+			}
+			else
+			{
+				pos.SetX(finalPosX - transform.GetScale().X() - remaining);
+			}
+
+			CreateBrokenPiece(remaining, pos);
+			pos.SetX(finalPosX);
 		}
 		else
 		{
