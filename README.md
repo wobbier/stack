@@ -1,7 +1,7 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/uwttukf4i7x87g4y?svg=true)](https://ci.appveyor.com/project/wobbier/mitchgame)
+[![Build status](https://ci.appveyor.com/api/projects/status/dy75dhkwnchrrjcy?svg=true)](https://ci.appveyor.com/project/wobbier/stack)
 ![license](https://img.shields.io/github/license/wobbier/mitchgame.svg)
 ======
-This is an example project to get you started making games in the [MitchEngine][2].
+This is an implementation of the game stack using the [MitchEngine][2].
 
 Getting Started
 -----------------------
