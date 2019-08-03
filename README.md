@@ -3,6 +3,8 @@
 ======
 This is an implementation of the game stack using the [MitchEngine][2].
 
+![Progress Pic](https://raw.githubusercontent.com/wobbier/stack/master/GitHub/Stack.png)
+
 Getting Started
 -----------------------
 
