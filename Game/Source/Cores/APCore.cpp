@@ -2,6 +2,7 @@
 #include "Components/Physics/Rigidbody.h"
 #include "Graphics/Texture.h"
 #include "Resource/ResourceCache.h"
+#include "Components/UI/Text.h"
 
 APCore::APCore()
 	: Base(ComponentFilter().Requires<Transform>().Requires<StackBlock>())
@@ -122,6 +123,9 @@ void APCore::Update(float dt)
 		m_isKeyPressed = false;
 	}
 	m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
+
+	Transform& scoreTransform = m_score->GetComponent<Transform>();
+	scoreTransform.SetPosition(Vector3((GetEngine().MainCamera.OutputSize.X() / 2.f), 100.f, 0.f));
 }
 
 void APCore::Init()
@@ -131,13 +135,19 @@ void APCore::Init()
 
 void APCore::OnStart()
 {
+	m_score = GetWorld().CreateEntity().lock();
+	Transform& scoreTransform = m_score->AddComponent<Transform>("Score");
+	scoreTransform.SetPosition(Vector3(500.f, 200.f, 0.f));
+	m_score->AddComponent<Text>();
+
 	m_currentBlock = GetWorld().CreateEntity().lock();
 	Transform& prevTransform = m_currentBlock->AddComponent<Transform>("Root StackBlock");
 	prevTransform.SetScale(m_currentStackSize);
 	StackBlock& prevBlock = m_currentBlock->AddComponent<StackBlock>();
 	prevBlock.BlockMoveSpeed = 0.f;
 	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
-	prevBlock.Color = Vector3((std::rand() % 255) / 255.f, (std::rand() % 255) / 255.f, (std::rand() % 255) / 255.f);
+	
+	prevBlock.Color = Vector3(m_random(0, 255) / 255.f, m_random(0, 255) / 255.f, m_random(0, 255) / 255.f);
 	m_colorStep = prevBlock.Color * .1f;
 	for (Transform* child : prevTransform.GetChildren())
 	{
@@ -158,6 +168,7 @@ void APCore::OnStart()
 
 void APCore::SpawnNextBlock()
 {
+	UpdateScore();
 	m_previousBlock = m_currentBlock;
 	Transform& prevTransform = m_previousBlock->GetComponent<Transform>();
 	StackBlock& prevBlock = m_previousBlock->GetComponent<StackBlock>();
@@ -184,6 +195,7 @@ void APCore::SpawnNextBlock()
 	{
 		transform.SetPosition(prevTransform.Position + Vector3(kStartDistance, (prevTransform.GetScale().Y()) + (.3f), 0.f));
 	}
+
 	for (Transform* child : transform.GetChildren())
 	{
 		child->Reset();
@@ -194,7 +206,7 @@ void APCore::SpawnNextBlock()
 			Vector3 newColor = (prevBlock.Color + m_colorStep);
 			if (newColor[0] > 0.9f || newColor[0] < 0.1f)
 			{
-				m_colorStep = Vector3((std::rand() % 255) / 255.f, (std::rand() % 255) / 255.f, (std::rand() % 255) / 255.f) * .1f;
+				m_colorStep = Vector3(m_random(0, 255) / 255.f, m_random(0, 255) / 255.f, m_random(0, 255) / 255.f) * .1f;
 			}
 			block.Color = prevBlock.Color + m_colorStep;
 			mesh.MeshMaterial->DiffuseColor = block.Color;
@@ -381,4 +393,14 @@ void APCore::Reset(Transform& transform)
 	pos[2] = 0.0f;
 	transform.SetPosition(pos);
 	BRUH("You Lost!");
+}
+
+void APCore::UpdateScore()
+{
+	if (m_score)
+	{
+		Text& text = m_score->GetComponent<Text>();
+		size_t score = GetEntities().size();
+		text.SetText(std::to_string((score > 0 ? score - 1 : 0)));
+	}
 }

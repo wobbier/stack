@@ -12,6 +12,7 @@
 #include "Cores/SceneGraph.h"
 #include "Components/Camera.h"
 #include "Mathf.h"
+#include "Math/Random.h"
 
 class StackBlock final
 	: public Component<StackBlock>
@@ -78,9 +79,10 @@ private:
 	void CreateBrokenPiece(float amountLost, Vector3 something);
 	void SetupCamera();
 	void EndBlock();
-
+	void UpdateScore();
 	void Reset(Transform& transform);
 
+	SharedPtr<Entity> m_score;
 	SharedPtr<Entity> m_currentBlock;
 	SharedPtr<Entity> m_previousBlock;
 	SharedPtr<Entity> m_mainCamera;
@@ -95,5 +97,6 @@ private:
 	float m_cameraHeightOffset = 5.f;
 	bool m_isKeyPressed = false;
 	float m_fracJourney = 0.f;
+	Random64 m_random;
 };
 ME_REGISTER_CORE(APCore)
