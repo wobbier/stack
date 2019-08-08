@@ -1,6 +1,7 @@
 #include "PCH.h"
 #include "App.h"
-#include "MitchGame.h"
+#include "ComponentRegistry.h"
+#include "StackGame.h"
 
 #include <ppltasks.h>
 #include "Renderer.h"
@@ -12,10 +13,10 @@ using namespace Windows::ApplicationModel;
 using namespace Windows::ApplicationModel::Core;
 using namespace Windows::ApplicationModel::Activation;
 using namespace Windows::UI::Core;
-using namespace Windows::UI::Input;
+//using namespace Windows::UI::Input;
 using namespace Windows::System;
 using namespace Windows::Foundation;
-using namespace Windows::Graphics::Display;
+//using namespace Windows::Graphics::Display;
 
 App::App()
 {
@@ -34,7 +35,7 @@ void App::Initialize(CoreApplicationView^ applicationView)
 
 	// At this point we have access to the device. 
 
-	m_main = std::make_unique<MitchGame>();
+	m_main = std::make_unique<StackGame>();
 }
 
 // Called when the CoreWindow object is created (or re-created).

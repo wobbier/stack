@@ -101,7 +101,9 @@ void APCore::Update(float dt)
 	{
 		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.Position.X(), m_currentPosition.Y() + m_cameraHeightOffset, camTransform.Position.Z()), m_fracJourney));
 	}
-	if (!m_isKeyPressed && Input::GetInstance().IsKeyDown(KeyCode::P))
+	auto Keyboard = Input::GetInstance().GetKeyboardState();
+	auto Controller = Input::GetInstance().GetControllerState();
+	if (!m_isKeyPressed && (Keyboard.P || Controller.buttons.y))
 	{
 		auto entities = GetEntities();
 		for (Entity& entity : entities)
@@ -113,13 +115,13 @@ void APCore::Update(float dt)
 		}
 		m_isKeyPressed = false;
 	}
-	if (!m_isKeyPressed && Input::GetInstance().IsKeyDown(KeyCode::Space))
+	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a))
 	{
 		EndBlock();
 		SpawnNextBlock();
 		m_isKeyPressed = false;
 	}
-	m_isKeyPressed = Input::GetInstance().IsKeyDown(KeyCode::Space);
+	m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
 }
 
 void APCore::Init()
