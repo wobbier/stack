@@ -19,7 +19,8 @@ class StackBlock final
 {
 public:
 	StackBlock()
-		: Color(1.f)
+		: Component("StackBlock")
+		, Color(1.f)
 	{
 	}
 
@@ -76,13 +77,13 @@ private:
 	virtual void OnStop() override;
 
 	void SpawnNextBlock();
-	void CreateBrokenPiece(float amountLost, Vector3 something);
+	void CreateBrokenPiece(float amountLost, Vector3 position);
 	void SetupCamera();
 	void EndBlock();
-	void UpdateScore();
+	unsigned int UpdateScore();
 	void Reset(Transform& transform);
 
-	SharedPtr<Entity> m_score;
+	SharedPtr<Entity> m_uiScore;
 	SharedPtr<Entity> m_currentBlock;
 	SharedPtr<Entity> m_previousBlock;
 	SharedPtr<Entity> m_mainCamera;
@@ -94,7 +95,7 @@ private:
 	float m_totalTime = 0.f;
 	float m_cameraTravelDistance;
 	float m_cameraFocusSpeed = 2.f;
-	float m_cameraHeightOffset = 5.f;
+	float m_cameraHeightOffset = 10.f;
 	bool m_isKeyPressed = false;
 	float m_fracJourney = 0.f;
 	Random64 m_random;

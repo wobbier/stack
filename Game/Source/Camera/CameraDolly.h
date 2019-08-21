@@ -7,6 +7,11 @@ class CameraDolley
 	: public Component<CameraDolley>
 {
 public:
+	CameraDolley()
+		: Component("CameraDolley")
+	{
+
+	}
 	virtual void Serialize(json& outJson) override
 	{
 	}

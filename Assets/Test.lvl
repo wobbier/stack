@@ -69,6 +69,28 @@
                 }
             ],
             "Name": "Environment Light"
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Type": "Transform"
+                },
+                {
+                    "FilePath": "Assets/UI/Test.html",
+                    "Type": "GameUIView"
+                }
+            ],
+            "Name": "UI"
         }
     ]
 }

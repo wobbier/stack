@@ -3,6 +3,7 @@
 #include "Graphics/Texture.h"
 #include "Resource/ResourceCache.h"
 #include "Components/UI/Text.h"
+#include "Components/GameUIView.h"
 
 APCore::APCore()
 	: Base(ComponentFilter().Requires<Transform>().Requires<StackBlock>())
@@ -118,14 +119,14 @@ void APCore::Update(float dt)
 	}
 	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a))
 	{
-		EndBlock();
+		if (m_previousBlock)
+		{
+			EndBlock();
+		}
 		SpawnNextBlock();
 		m_isKeyPressed = false;
 	}
 	m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
-
-	Transform& scoreTransform = m_score->GetComponent<Transform>();
-	scoreTransform.SetPosition(Vector3((GetEngine().MainCamera.OutputSize.X() / 2.f), 100.f, 0.f));
 }
 
 void APCore::Init()
@@ -135,10 +136,10 @@ void APCore::Init()
 
 void APCore::OnStart()
 {
-	m_score = GetWorld().CreateEntity().lock();
-	Transform& scoreTransform = m_score->AddComponent<Transform>("Score");
-	scoreTransform.SetPosition(Vector3(500.f, 200.f, 0.f));
-	m_score->AddComponent<Text>();
+	{
+		Transform* uiEnt = GetEngine().SceneNodes->RootTransform->GetChildByName("UI");
+		m_uiScore = GetWorld().GetEntity(uiEnt->Parent).lock();
+	}
 
 	m_currentBlock = GetWorld().CreateEntity().lock();
 	Transform& prevTransform = m_currentBlock->AddComponent<Transform>("Root StackBlock");
@@ -162,7 +163,7 @@ void APCore::OnStart()
 		}
 	}
 	SpawnNextBlock();
-
+	m_currentBlock->SetActive(false);
 	SetupCamera();
 }
 
@@ -235,6 +236,9 @@ void APCore::SetupCamera()
 	cam.Projection = Moonlight::ProjectionType::Orthographic;
 	cam.UpdateCameraTransform(cameraEnt->GetPosition());
 	cam.LookAt(Vector3(0.f, 0.f, 0.f));
+
+	cameraEnt->SetPosition(cameraEnt->GetPosition() + Vector3(0.f, 5.f, 0.f));
+	cam.UpdateCameraTransform(cameraEnt->GetPosition());
 }
 
 void APCore::EndBlock()
@@ -395,12 +399,17 @@ void APCore::Reset(Transform& transform)
 	BRUH("You Lost!");
 }
 
-void APCore::UpdateScore()
+unsigned int APCore::UpdateScore()
 {
-	if (m_score)
+	size_t ents = GetEntities().size();
+	unsigned int Score = ents;// (ents > 0 ? ents - 1 : 0);
+
+	if (m_uiScore)
 	{
-		Text& text = m_score->GetComponent<Text>();
-		size_t score = GetEntities().size();
-		text.SetText(std::to_string((score > 0 ? score - 1 : 0)));
+		// #TODO This could be any other BasicUIView
+		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
+
+		view.UpdateScore(Score);
 	}
+	return Score;
 }
