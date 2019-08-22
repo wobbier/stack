@@ -30,6 +30,10 @@
                         0.0
                     ],
                     "Type": "Transform"
+                },
+                {
+                    "FilePath": "Assets/Sounds/StackSound.wav",
+                    "Type": "AudioSource"
                 }
             ],
             "Name": "Main Camera"
@@ -86,7 +90,7 @@
                     "Type": "Transform"
                 },
                 {
-                    "FilePath": "Assets/UI/Test.html",
+                    "FilePath": "Assets/UI/GameUI.html",
                     "Type": "GameUIView"
                 }
             ],

@@ -1,5 +1,6 @@
 #include "GameUIView.h"
 #include "Ultralight/View.h"
+#include "UI/JSHelpers.h"
 
 GameUIView::GameUIView()
 	: BasicUIView("GameUIView")

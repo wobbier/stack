@@ -4,6 +4,7 @@
 #include "Resource/ResourceCache.h"
 #include "Components/UI/Text.h"
 #include "Components/GameUIView.h"
+#include "Components/Audio/AudioSource.h"
 
 APCore::APCore()
 	: Base(ComponentFilter().Requires<Transform>().Requires<StackBlock>())
@@ -340,6 +341,8 @@ void APCore::EndBlock()
 			pos.SetZ(prevPos.Z());
 		}
 	}
+
+	m_mainCamera->GetComponent<AudioSource>().Play();
 
 	transform.SetPosition(pos);
 }
