@@ -16,7 +16,7 @@ void GameUIView::OnUILoad(ultralight::JSObject& GlobalWindow, ultralight::View* 
 
 void GameUIView::GetScore(const ultralight::JSObject& thisObject, const ultralight::JSArgs& args)
 {
-	//UpdateScore(Score);
+	UpdateScore(Score);
 }
 
 void GameUIView::UpdateScore(unsigned int NewScore)
