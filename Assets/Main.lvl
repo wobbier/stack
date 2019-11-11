@@ -1,0 +1,31 @@
+{
+    "Cores": [
+        {
+            "Type": "AudioCore"
+        }
+    ],
+    "Scene": [
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Type": "Transform"
+                },
+                {
+                    "FilePath": "Assets/UI/GameUI.html",
+                    "Type": "IntroUI"
+                }
+            ],
+            "Name": "New Entity"
+        }
+    ]
+}

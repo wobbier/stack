@@ -4,3 +4,4 @@
 #include "Cores/APCore.h"
 #include "Camera/CameraDolly.h"
 #include "Components/GameUIView.h"
+#include "Components/IntroUI.h"

@@ -212,6 +212,8 @@ void APCore::SpawnNextBlock()
 			}
 			block.Color = prevBlock.Color + m_colorStep;
 			mesh.MeshMaterial->DiffuseColor = block.Color;
+
+			Camera::CurrentCamera->ClearColor = prevBlock.Color;
 		}
 	}
 

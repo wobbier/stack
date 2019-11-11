@@ -16,13 +16,21 @@ void GameUIView::OnUILoad(ultralight::JSObject& GlobalWindow, ultralight::View* 
 
 void GameUIView::GetScore(const ultralight::JSObject& thisObject, const ultralight::JSArgs& args)
 {
-	UpdateScore(Score);
+	//UpdateScore(Score);
 }
 
 void GameUIView::UpdateScore(unsigned int NewScore)
 {
 	Score = NewScore;
-	ultralight::JSEval(std::string("document.getElementById('Score').innerHTML='" + std::to_string(Score) + "';").c_str());
+	ultralight::JSEval(std::string("document.getElementById('Score').innerHTML='" + ((Score == 0) ? "HEAP" : std::to_string(Score)) + "';").c_str());
+	if (Score == 0)
+	{
+		ultralight::JSEval(std::string("document.getElementById('SpaceToPlay').innerHTML='Space to Play';").c_str());
+	}
+	else
+	{
+		ultralight::JSEval(std::string("document.getElementById('SpaceToPlay').innerHTML='';").c_str());
+	}
 }
 
 #if ME_EDITOR
