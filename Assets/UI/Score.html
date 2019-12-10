@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet"> 
+        <style>
+            body {
+                /*background: black;*/
+                color: #DBDBDB;
+                font-family: 'Oswald', sans-serif;
+                font-size: 26px;
+            }
+            .container {
+                width: 600px;
+                margin: 0 auto;
+            }
+            .section {
+                height: 45px;
+                margin-bottom: 5px;
+            }
+            .section.red {
+                background: rgba(139, 45, 45, 0.6);
+            }
+            .section.blue {
+                background: rgba(40, 60, 102, 0.6);
+            }
+            .wins {
+                background: #393939;
+                float: left;
+                width: 50px;
+            }
+            .wins.team {
+                background: #141414;
+            }
+            .section div {
+                height: 100%;
+                text-align: center;
+                vertical-align: middle;
+            }
+            .section .ping {
+                float: right !important;
+                width: 10px;
+                margin-left: 5px;
+            }
+            .ping.excellent {
+                background: #00B200;
+            }
+
+            .section .team-name {
+                float: left;
+                padding-left: 10px;
+            }
+            .section .tag {
+                float: right;
+                width: 90px;
+                background: #8B2D2D;
+            }
+            .section .score {
+                float: right;
+                width: 90px;
+                background: #393939;
+            }
+
+            .section .score.team {
+                background: #141414;
+            }
+            .section .hitbox:hover {
+                outline: none;
+                border-color: white;
+                box-shadow: 0 0 10px white inset;
+            }
+            .section .hitbox {
+                width: 100%;
+                height: 100%;
+                position: relative;
+            }
+            .clearfix {
+                clear: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="section red">
+                <div class="wins team">0</div>
+                <div class="team-name">RED TEAM</div>
+                <div class="ping zero">&nbsp;</div>
+                <div class="score team">0</div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="section red">
+                <div class="wins">0</div>
+                <div class="team-name">RastaNinja 77</div>
+                <div class="ping excellent"></div>
+                <div class="score">0</div>
+                <div class="tag">UWU</div>
+                <div class="hitbox" onmouseenter="PlaySound('Assets/Sounds/UI.wav')"></div>
+            </div>
+            
+            <div class="section blue">
+                <div class="wins team">0</div>
+                <div class="team-name">BLUE TEAM</div>
+                <div class="ping zero">&nbsp;</div>
+                <div class="score team">0</div>
+            </div>
+            <div class="section blue">
+                <div class="wins">0</div>
+                <div class="team-name">TKDumont</div>
+                <div class="ping excellent"></div>
+                <div class="score">0</div>
+                <div class="tag">TKD</div>
+                <div class="hitbox" onmouseenter="PlaySound('Assets/Sounds/UI.wav')"></div>
+            </div>
+        </div>
+    </body>
+</html>
