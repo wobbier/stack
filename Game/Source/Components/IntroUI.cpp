@@ -1,7 +1,7 @@
 #include "IntroUI.h"
 #include "Ultralight/View.h"
 #include "UI/JSHelpers.h"
-#include "HavanaEvents.h"
+#include "Events/SceneEvents.h"
 
 IntroUI::IntroUI()
 	: BasicUIView("IntroUI")

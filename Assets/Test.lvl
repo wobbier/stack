@@ -29,10 +29,17 @@
                         0.0,
                         0.0
                     ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
                     "Type": "Transform"
                 },
                 {
                     "FilePath": "Assets/Sounds/StackSound.wav",
+                    "Loop": false,
+                    "PlayOnAwake": false,
                     "Type": "AudioSource"
                 }
             ],
@@ -50,6 +57,11 @@
                         0.0,
                         0.0,
                         0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "Type": "Transform"
                 },
@@ -86,6 +98,11 @@
                         0.0,
                         0.0,
                         0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "Type": "Transform"
                 },

@@ -6,7 +6,6 @@
 #include "ECS/Entity.h"
 #include <string>
 #include "Engine/Input.h"
-#include "Components/Animation.h"
 #include "Components/Camera.h"
 #include "Components/Physics/Rigidbody.h"
 #include "Components/Graphics/Model.h"
@@ -17,7 +16,7 @@
 #include "Engine/World.h"
 #include "Path.h"
 #include "Game.h"
-#include "HavanaEvents.h"
+#include "Events/SceneEvents.h"
 
 StackGame::StackGame()
 	: Game()
@@ -34,7 +33,6 @@ void StackGame::OnStart()
 
 void StackGame::OnUpdate(float DeltaTime)
 {
-	Input& Instance = Input::GetInstance();
 }
 
 void StackGame::OnEnd()

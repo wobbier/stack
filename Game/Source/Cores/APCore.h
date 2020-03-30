@@ -13,6 +13,7 @@
 #include "Components/Camera.h"
 #include "Mathf.h"
 #include "Math/Random.h"
+#include "ECS/EntityHandle.h"
 
 class StackBlock final
 	: public Component<StackBlock>
@@ -83,14 +84,21 @@ private:
 	unsigned int UpdateScore();
 	void Reset(Transform& transform);
 
-	SharedPtr<Entity> m_uiScore;
-	SharedPtr<Entity> m_currentBlock;
-	SharedPtr<Entity> m_previousBlock;
-	SharedPtr<Entity> m_mainCamera;
+	int GetPreviousColorIndex();
+
+	EntityHandle m_uiScore;
+	EntityHandle m_currentBlock;
+	EntityHandle m_previousBlock;
+	EntityHandle m_mainCamera;
 	Vector3 m_currentPosition;
 	Vector3 m_currentStackSize;
 	Vector2 m_gridSnapSize;
-	Vector3 m_colorStep;
+
+	float m_colorStepPercent = 0.1f;
+	float m_currentColorStepPercent = 0.0f;
+	int m_currentColorIndex = 0;
+	int m_targetColorIndex = 1;
+	std::vector<Vector3> m_colors;
 	float m_startTime = 0.f;
 	float m_totalTime = 0.f;
 	float m_cameraTravelDistance;
