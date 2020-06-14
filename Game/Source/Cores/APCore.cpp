@@ -149,7 +149,12 @@ void APCore::OnStart()
 	m_colors.push_back(Vector3(252, 92, 101) / 255.f);
 	m_colors.push_back(Vector3(69, 170, 242) / 255.f);
 	{
-		Transform* uiEnt = GetEngine().SceneNodes->RootTransform->GetChildByName("UI");
+		SceneGraph* graph = GetEngine().SceneNodes;
+		Transform* uiEnt = graph->RootTransform->GetComponent<Transform>().GetChildByName("UI");
+		if(!uiEnt)
+		{
+			return;
+		}
 		m_uiScore = uiEnt->Parent;
 	}
 
@@ -257,7 +262,7 @@ void APCore::SpawnNextBlock()
 
 void APCore::SetupCamera()
 {
-	Transform* cameraEnt = GetEngine().SceneNodes->RootTransform->GetChildByName("Main Camera");
+	Transform* cameraEnt = GetEngine().SceneNodes->RootTransform->GetComponent<Transform>().GetChildByName("Main Camera");
 	m_mainCamera = cameraEnt->Parent;
 
 	cameraEnt->SetPosition(Vector3(-5.f, m_currentBlock->GetComponent<Transform>().GetPosition().Y() + 5, 5.f));

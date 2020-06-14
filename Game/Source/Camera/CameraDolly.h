@@ -12,19 +12,19 @@ public:
 	{
 
 	}
-	virtual void Serialize(json& outJson) override
+	virtual void OnSerialize(json& outJson) final
 	{
 	}
 
-	virtual void Deserialize(const json& inJson) override
+	virtual void OnDeserialize(const json& inJson) final
 	{
 	}
 #if ME_EDITOR
-	virtual void OnEditorInspect() override
+	virtual void OnEditorInspect() final
 	{
 	}
 #endif
-	virtual void Init() override
+	virtual void Init() final
 	{
 	}
 };

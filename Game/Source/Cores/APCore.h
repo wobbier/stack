@@ -25,23 +25,23 @@ public:
 	{
 	}
 
-	virtual void Serialize(json& outJson) override
+	virtual void OnSerialize(json& outJson) final
 	{
 	}
 
-	virtual void Deserialize(const json& inJson) override
+	virtual void OnDeserialize(const json& inJson) final
 	{
 	}
 
 #if ME_EDITOR
-	virtual void OnEditorInspect() override
+	virtual void OnEditorInspect() final
 	{
 		ImGui::Checkbox("Movement Axis Z", &MoveOnX);
 		ImGui::Checkbox("Block Direction", &BlockDirection);
 		ImGui::DragFloat("Movement Speed", &BlockMoveSpeed);
 	}
 #endif
-	virtual void Init() override
+	virtual void Init() final
 	{
 	}
 
