@@ -5,7 +5,7 @@
 
 #include <ppltasks.h>
 #include "Renderer.h"
-#include "Device/D3D12Device.h"
+#include "Device/DX11Device.h"
 #include "Engine/Engine.h"
 
 using namespace concurrency;

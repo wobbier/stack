@@ -14,7 +14,9 @@
         {
             "Components": [
                 {
+                    "Far": 2000.0,
                     "IsCurrent": true,
+                    "Near": 0.10000000149011612,
                     "Type": "Camera",
                     "Zoom": 45.0
                 },
@@ -43,6 +45,7 @@
                     "Type": "AudioSource"
                 }
             ],
+            "DestroyOnLoad": true,
             "Name": "Main Camera"
         },
         {
@@ -67,9 +70,9 @@
                 },
                 {
                     "Ambient": [
-                        0.5740000009536743,
-                        0.5740000009536743,
-                        0.5740000009536743
+                        1.0,
+                        0.9999899864196777,
+                        0.9999899864196777
                     ],
                     "Diffuse": [
                         1.0,
@@ -84,6 +87,7 @@
                     "Type": "DirectionalLight"
                 }
             ],
+            "DestroyOnLoad": true,
             "Name": "Environment Light"
         },
         {
@@ -111,6 +115,7 @@
                     "Type": "GameUIView"
                 }
             ],
+            "DestroyOnLoad": true,
             "Name": "UI"
         }
     ]
