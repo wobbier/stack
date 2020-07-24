@@ -120,7 +120,7 @@ void APCore::Update(float dt)
 		}
 		m_isKeyPressed = false;
 	}
-	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a) || testColors <= 40)
+	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a))// || testColors <= 40)
 	{
 		testColors++;
 		if (m_previousBlock)
@@ -166,7 +166,7 @@ void APCore::OnStart()
 	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
 
 	prevBlock.Color = (m_colors[m_currentColorIndex]);
-	for (Transform* child : prevTransform.GetChildren())
+	for (SharedPtr<Transform> child : prevTransform.GetChildren())
 	{
 		child->Reset();
 		if (child->Parent->HasComponent<Mesh>())
@@ -216,7 +216,7 @@ void APCore::SpawnNextBlock()
 		transform.SetPosition(prevTransform.GetPosition() + Vector3(kStartDistance, (prevTransform.GetScale().Y()) + (.3f), 0.f));
 	}
 
-	for (Transform* child : transform.GetChildren())
+	for (SharedPtr<Transform> child : transform.GetChildren())
 	{
 		child->Reset();
 		if (child->Parent->HasComponent<Mesh>())
@@ -245,7 +245,7 @@ void APCore::SpawnNextBlock()
 			}
 			m_currentColorStepPercent += m_colorStepPercent;
 			BRUH("New Color(" + std::to_string(m_targetColorIndex) + "): " + m_colors[m_targetColorIndex].ToString() + " - Old: " + m_colors[GetPreviousColorIndex()].ToString());
-			//Camera::CurrentCamera->ClearColor = prevBlock.Color;
+			Camera::CurrentCamera->ClearColor = prevBlock.Color;
 		}
 	}
 
@@ -399,7 +399,7 @@ void APCore::CreateBrokenPiece(float amountLost, Vector3 position)
 	broken->AddComponent<Model>("Assets/Cube.fbx");
 	Rigidbody& rigidbody = broken->AddComponent<Rigidbody>(Rigidbody::ColliderType::Box);
 	rigidbody.SetScale(stack);
-	for (Transform* child : transform.GetChildren())
+	for (SharedPtr<Transform> child : transform.GetChildren())
 	{
 		child->Reset();
 		if (child->Parent->HasComponent<Mesh>())
