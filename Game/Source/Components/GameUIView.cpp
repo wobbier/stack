@@ -33,6 +33,11 @@ void GameUIView::UpdateScore(unsigned int NewScore)
 	}
 }
 
+void GameUIView::SetMessage(const std::string& NewMessage)
+{
+	ultralight::JSEval(std::string("document.getElementById('Score').innerHTML='" + NewMessage + "';").c_str());
+}
+
 #if ME_EDITOR
 
 void GameUIView::OnEditorInspect()

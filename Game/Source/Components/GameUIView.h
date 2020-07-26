@@ -13,6 +13,7 @@ public:
 	virtual void OnUILoad(ultralight::JSObject& GlobalWindow, ultralight::View* Caller) final;
 
 	void UpdateScore(unsigned int NewScore);
+	void SetMessage(const std::string& NewMessage);
 
 #if ME_EDITOR
 	virtual void OnEditorInspect() override;

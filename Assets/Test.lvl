@@ -1,6 +1,9 @@
 {
     "Cores": [
         {
+            "Type": "SelfDestructor"
+        },
+        {
             "Type": "AudioCore"
         },
         {

@@ -5,6 +5,7 @@
 #include "Components/GameUIView.h"
 #include "Components/Audio/AudioSource.h"
 #include "Mathf.h"
+#include "Cores/Utility/SelfDestructCore.h"
 
 static int testColors = 0;
 
@@ -37,65 +38,64 @@ void APCore::OnEditorInspect()
 
 void APCore::Update(float dt)
 {
-	if (!m_currentBlock)
+	if (m_currentBlock)
 	{
-		return;
-	}
-	Transform& transform = m_currentBlock->GetComponent<Transform>();
-	StackBlock& block = m_currentBlock->GetComponent<StackBlock>();
-	m_currentPosition = transform.GetPosition();
-	if (!block.MoveOnX)
-	{
-		if (block.BlockDirection)
+		Transform& transform = m_currentBlock->GetComponent<Transform>();
+		StackBlock& block = m_currentBlock->GetComponent<StackBlock>();
+		m_currentPosition = transform.GetPosition();
+		if (!block.MoveOnX)
 		{
-			if (m_currentPosition.Z() < kStartDistance)
+			if (block.BlockDirection)
 			{
-				m_currentPosition.SetZ(m_currentPosition.Z() + (block.BlockMoveSpeed * dt));
+				if (m_currentPosition.Z() < kStartDistance)
+				{
+					m_currentPosition.SetZ(m_currentPosition.Z() + (block.BlockMoveSpeed * dt));
+				}
+				else
+				{
+					block.BlockDirection = false;
+				}
 			}
 			else
 			{
-				block.BlockDirection = false;
+				if (m_currentPosition.Z() > -kStartDistance)
+				{
+					m_currentPosition.SetZ(m_currentPosition.Z() - (block.BlockMoveSpeed * dt));
+				}
+				else
+				{
+					block.BlockDirection = true;
+				}
 			}
-		}
-		else
-		{
-			if (m_currentPosition.Z() > -kStartDistance)
-			{
-				m_currentPosition.SetZ(m_currentPosition.Z() - (block.BlockMoveSpeed * dt));
-			}
-			else
-			{
-				block.BlockDirection = true;
-			}
-		}
 
-	}
-	else
-	{
-		if (block.BlockDirection)
-		{
-			if (m_currentPosition.X() < kStartDistance)
-			{
-				m_currentPosition.SetX(m_currentPosition.X() + (block.BlockMoveSpeed * dt));
-			}
-			else
-			{
-				block.BlockDirection = false;
-			}
 		}
 		else
 		{
-			if (m_currentPosition.X() > -kStartDistance)
+			if (block.BlockDirection)
 			{
-				m_currentPosition.SetX(m_currentPosition.X() - (block.BlockMoveSpeed * dt));
+				if (m_currentPosition.X() < kStartDistance)
+				{
+					m_currentPosition.SetX(m_currentPosition.X() + (block.BlockMoveSpeed * dt));
+				}
+				else
+				{
+					block.BlockDirection = false;
+				}
 			}
 			else
 			{
-				block.BlockDirection = true;
+				if (m_currentPosition.X() > -kStartDistance)
+				{
+					m_currentPosition.SetX(m_currentPosition.X() - (block.BlockMoveSpeed * dt));
+				}
+				else
+				{
+					block.BlockDirection = true;
+				}
 			}
 		}
+		transform.SetPosition(m_currentPosition);
 	}
-	transform.SetPosition(m_currentPosition);
 
 	m_totalTime += dt;
 	float distCovered = (m_totalTime - m_startTime) * m_cameraFocusSpeed;
@@ -122,12 +122,36 @@ void APCore::Update(float dt)
 	}
 	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a))// || testColors <= 40)
 	{
-		testColors++;
-		if (m_previousBlock)
+		switch (m_state)
 		{
-			EndBlock();
+		case GameState::Start:
+			//OnStart();
+			m_state = GameState::Active;
+		case GameState::Active:
+		{
+			testColors++;
+			bool canContinue = true;
+			if (m_previousBlock)
+			{
+				canContinue = EndBlock();
+			}
+			if (canContinue)
+			{
+				SpawnNextBlock();
+			}
+			break;
 		}
-		SpawnNextBlock();
+		case GameState::Lost:
+			m_state = GameState::Restart;
+			break;
+		case GameState::Restart:
+			OnStart();
+			m_state = GameState::Start;
+			break;
+		default:
+			break;
+
+		}
 		m_isKeyPressed = false;
 	}
 	m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
@@ -160,7 +184,7 @@ void APCore::OnStart()
 
 	m_currentBlock = GetWorld().CreateEntity();
 	Transform& prevTransform = m_currentBlock->AddComponent<Transform>("Root StackBlock");
-	prevTransform.SetScale(m_currentStackSize);
+	prevTransform.SetScale(Vector3(2.f));
 	StackBlock& prevBlock = m_currentBlock->AddComponent<StackBlock>();
 	prevBlock.BlockMoveSpeed = 0.f;
 	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
@@ -274,7 +298,7 @@ void APCore::SetupCamera()
 	cameraEnt->SetPosition(cameraEnt->GetPosition() + Vector3(0.f, 5.f, 0.f));
 }
 
-void APCore::EndBlock()
+bool APCore::EndBlock()
 {
 	Transform& prevTransform = m_previousBlock->GetComponent<Transform>();
 	Vector3& prevPos = prevTransform.GetPosition();
@@ -296,7 +320,8 @@ void APCore::EndBlock()
 			if (m_currentStackSize.X() <= 0.f)
 			{
 				Reset(transform);
-				return;
+				LoseGame();
+				return false;
 			}
 			transform.SetScale(m_currentStackSize);
 
@@ -322,7 +347,8 @@ void APCore::EndBlock()
 		{
 			if (m_currentStackSize.X() > kBoundsLimit)
 			{
-				m_currentStackSize.SetX(2.f);
+				LoseGame();
+				return false;
 			}
 			pos.SetX(prevPos.X());
 			pos.SetZ(prevPos.Z());
@@ -341,8 +367,8 @@ void APCore::EndBlock()
 			if (m_currentStackSize.Z() <= 0.f)
 			{
 				Reset(transform);
-
-				return;
+				LoseGame();
+				return false;
 			}
 			transform.SetScale(m_currentStackSize);
 
@@ -367,7 +393,8 @@ void APCore::EndBlock()
 		{
 			if (m_currentStackSize.Z() > kBoundsLimit)
 			{
-				m_currentStackSize.SetZ(2.f);
+				LoseGame();
+				return false;
 			}
 			pos.SetX(prevPos.X());
 			pos.SetZ(prevPos.Z());
@@ -377,6 +404,7 @@ void APCore::EndBlock()
 	m_mainCamera->GetComponent<AudioSource>().Play();
 
 	transform.SetPosition(pos);
+	return true;
 }
 
 void APCore::CreateBrokenPiece(float amountLost, Vector3 position)
@@ -397,6 +425,7 @@ void APCore::CreateBrokenPiece(float amountLost, Vector3 position)
 	transform.SetPosition(position);
 	transform.SetScale(stack);
 	broken->AddComponent<Model>("Assets/Cube.fbx");
+	broken->AddComponent<SelfDestruct>(5.f);
 	Rigidbody& rigidbody = broken->AddComponent<Rigidbody>(Rigidbody::ColliderType::Box);
 	rigidbody.SetScale(stack);
 	for (SharedPtr<Transform> child : transform.GetChildren())
@@ -405,17 +434,32 @@ void APCore::CreateBrokenPiece(float amountLost, Vector3 position)
 		if (child->Parent->HasComponent<Mesh>())
 		{
 			Mesh& mesh = child->Parent->GetComponent<Mesh>();
+			child->Parent->AddComponent<SelfDestruct>(5.f);
 			mesh.MeshMaterial->DiffuseColor = block.Color;
 			block.Color = mesh.MeshMaterial->DiffuseColor;
 		}
 	}
 }
 
+void RecusiveDeleteBlock(Entity& ent, Transform* trans)
+{
+	if (!trans)
+	{
+		return;
+	}
+	for (auto child : trans->GetChildren())
+	{
+		RecusiveDeleteBlock(*child->Parent.Get(), child.get());
+	}
+	ent.MarkForDelete();
+};
+
 void APCore::OnStop()
 {
 	for (auto ent : GetEntities())
 	{
-		ent.MarkForDelete();
+		//ent.MarkForDelete();
+		RecusiveDeleteBlock(ent, &ent.GetComponent<Transform>());
 	}
 }
 
@@ -457,4 +501,18 @@ int APCore::GetPreviousColorIndex()
 		return 0;
 	}
 	return m_currentColorIndex - 1;
+}
+
+void APCore::LoseGame()
+{
+	m_currentStackSize.SetX(2.f);
+	if (m_uiScore)
+	{
+		// #TODO This could be any other BasicUIView
+		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
+
+		view.SetMessage("You Fucked Up");
+		OnStop();
+	}
+	m_state = GameState::Lost;
 }

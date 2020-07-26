@@ -58,6 +58,14 @@ ME_REGISTER_COMPONENT(StackBlock)
 class APCore final
 	: public Core<APCore>
 {
+	enum class GameState
+	{
+		Start = 0,
+		Active,
+		Lost,
+		Restart
+	};
+
 	const float kErrorMargin = 0.1f;
 	const float kStartDistance = 5.0f;
 	const float kBoundsLimit = 4.f;
@@ -80,12 +88,12 @@ private:
 	void SpawnNextBlock();
 	void CreateBrokenPiece(float amountLost, Vector3 position);
 	void SetupCamera();
-	void EndBlock();
+	bool EndBlock();
 	unsigned int UpdateScore();
 	void Reset(Transform& transform);
 
 	int GetPreviousColorIndex();
-
+	void LoseGame();
 	EntityHandle m_uiScore;
 	EntityHandle m_currentBlock;
 	EntityHandle m_previousBlock;
@@ -107,5 +115,6 @@ private:
 	bool m_isKeyPressed = false;
 	float m_fracJourney = 0.f;
 	Random64 m_random;
+	GameState m_state = GameState::Start;
 };
 ME_REGISTER_CORE(APCore)
