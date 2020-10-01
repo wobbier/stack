@@ -139,7 +139,7 @@ body {
   position: absolute;
   top: 20%;
   width: 100%;
-  /*font-family: 'Overpass', sans-serif;*/
+  font-family: 'Anton', sans-serif;
 }
 #SpaceToPlay{
 	top: 50%;
@@ -147,4 +147,5 @@ body {
 	position: absolute;
 	width: 100%;
 	font-size: 34px;
+  font-family: 'Anton', sans-serif;
   }

@@ -6,6 +6,8 @@
 #include "Components/Audio/AudioSource.h"
 #include "Mathf.h"
 #include "Cores/Utility/SelfDestructCore.h"
+#include <stdlib.h>
+#include "Math/Random.h"
 
 static int testColors = 0;
 
@@ -38,7 +40,7 @@ void APCore::OnEditorInspect()
 
 void APCore::Update(float dt)
 {
-	if (m_currentBlock)
+	if (m_currentBlock && m_state != GameState::Lost)
 	{
 		Transform& transform = m_currentBlock->GetComponent<Transform>();
 		StackBlock& block = m_currentBlock->GetComponent<StackBlock>();
@@ -120,7 +122,7 @@ void APCore::Update(float dt)
 		}
 		m_isKeyPressed = false;
 	}
-	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a))// || testColors <= 40)
+	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a) /*|| testColors <= 40*/)
 	{
 		switch (m_state)
 		{
@@ -164,6 +166,11 @@ void APCore::Init()
 
 void APCore::OnStart()
 {
+	m_colors.clear();
+	while (!m_colorQueue.empty())
+	{
+		m_colorQueue.pop();
+	}
 	testColors = 0;
 	m_colors.reserve(6);
 	m_colors.push_back(Vector3(254, 211, 48) / 255.f);
@@ -182,14 +189,24 @@ void APCore::OnStart()
 		m_uiScore = uiEnt->Parent;
 	}
 
+	for (int i = 0; i < 10; ++i)
+	{
+		GetNextColor();
+	}
+
 	m_currentBlock = GetWorld().CreateEntity();
 	Transform& prevTransform = m_currentBlock->AddComponent<Transform>("Root StackBlock");
-	prevTransform.SetScale(Vector3(2.f));
+	prevTransform.SetScale(Vector3(2.f, 8.f, 2.f));
+	prevTransform.Translate(Vector3(0.f, -6.f, 0.f));
 	StackBlock& prevBlock = m_currentBlock->AddComponent<StackBlock>();
 	prevBlock.BlockMoveSpeed = 0.f;
 	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
 
-	prevBlock.Color = (m_colors[m_currentColorIndex]);
+	GenerateNextHue();
+
+	Camera::CurrentCamera->ClearColor = Darken(GetHue(testPercent / 100.f), 0.20f);
+
+	prevBlock.Color = GetHue(testPercent / 100.f);
 	for (SharedPtr<Transform> child : prevTransform.GetChildren())
 	{
 		child->Reset();
@@ -197,17 +214,42 @@ void APCore::OnStart()
 		{
 			m_currentColorStepPercent += m_colorStepPercent;
 			Mesh& mesh = child->Parent->GetComponent<Mesh>();
-			mesh.MeshMaterial->DiffuseColor = Vector3::Lerp(m_colors[m_currentColorIndex], m_colors[m_targetColorIndex], m_currentColorStepPercent);
+			mesh.MeshMaterial->DiffuseColor = GetHue(blockPercent / 100.f);
 			mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Diffuse, ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/CubeDiffuse.jpg")));
 			mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Opacity, ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/BaseCubeDiffuse.jpg")));
 		}
 	}
 	SpawnNextBlock();
-	StackBlock& curentStackBlock = m_currentBlock->AddComponent<StackBlock>();
-	Camera::CurrentCamera->ClearColor = curentStackBlock.Color;
 
 	m_currentBlock->SetActive(false);
 	SetupCamera();
+}
+
+Vector3 APCore::GetNextColor()
+{
+	Vector3 returnColor = Vector3::Lerp(m_colors[m_currentColorIndex], m_colors[m_targetColorIndex], m_currentColorStepPercent);
+
+	if (m_currentColorStepPercent >= 1.f)
+	{
+		m_currentColorStepPercent = 0;
+		m_currentColorIndex++;
+		m_targetColorIndex++;
+	}
+	else
+	{
+	}
+	if (m_targetColorIndex >= m_colors.size())
+	{
+		m_targetColorIndex = 0;
+	}
+	if (m_currentColorIndex >= m_colors.size())
+	{
+		m_currentColorIndex = 0;
+	}
+	m_currentColorStepPercent += m_colorStepPercent;
+	//BRUH("New Color(" + std::to_string(m_targetColorIndex) + "): " + m_colors[m_targetColorIndex].ToString() + " - Old: " + m_colors[GetPreviousColorIndex()].ToString());
+	m_colorQueue.push(returnColor);
+	return returnColor;
 }
 
 void APCore::SpawnNextBlock()
@@ -246,30 +288,14 @@ void APCore::SpawnNextBlock()
 		if (child->Parent->HasComponent<Mesh>())
 		{
 			Mesh& mesh = child->Parent->GetComponent<Mesh>();
+			GenerateNextHue();
 
-			block.Color = Vector3::Lerp(m_colors[m_currentColorIndex], m_colors[m_targetColorIndex], m_currentColorStepPercent);
-			mesh.MeshMaterial->DiffuseColor = block.Color;
-			BRUH(std::to_string(m_currentColorStepPercent) + ": " + block.Color.ToString());
-			if (m_currentColorStepPercent >= 1.f)
-			{
-				m_currentColorStepPercent = 0;
-				m_currentColorIndex++;
-				m_targetColorIndex++;
-			}
-			else
-			{
-			}
-			if (m_targetColorIndex >= m_colors.size())
-			{
-				m_targetColorIndex = 0;
-			}
-			if (m_currentColorIndex >= m_colors.size())
-			{
-				m_currentColorIndex = 0;
-			}
-			m_currentColorStepPercent += m_colorStepPercent;
-			BRUH("New Color(" + std::to_string(m_targetColorIndex) + "): " + m_colors[m_targetColorIndex].ToString() + " - Old: " + m_colors[GetPreviousColorIndex()].ToString());
-			Camera::CurrentCamera->ClearColor = prevBlock.Color;
+
+			Camera::CurrentCamera->ClearColor = Darken(GetHue(testPercent / 100.f), 0.20f);
+
+			mesh.MeshMaterial->DiffuseColor = Darken(GetHue(blockPercent / 100.f), 0.10f);
+			block.Color = mesh.MeshMaterial->DiffuseColor;
+			//m_colorQueue.pop();
 		}
 	}
 
@@ -282,6 +308,7 @@ void APCore::SpawnNextBlock()
 
 		m_totalTime = 0.f;
 	}
+	GetWorld().Simulate();
 }
 
 void APCore::SetupCamera()
@@ -295,7 +322,7 @@ void APCore::SetupCamera()
 	cam.Projection = Moonlight::ProjectionType::Orthographic;
 	cameraEnt->LookAt((Vector3(0.f, 0.f, 0.f) - cameraEnt->GetPosition()).Normalized());
 
-	cameraEnt->SetPosition(cameraEnt->GetPosition() + Vector3(0.f, 5.f, 0.f));
+	cameraEnt->SetPosition(cameraEnt->GetPosition() + Vector3(0.f, 10.f, 0.f));
 }
 
 bool APCore::EndBlock()
@@ -434,7 +461,7 @@ void APCore::CreateBrokenPiece(float amountLost, Vector3 position)
 		if (child->Parent->HasComponent<Mesh>())
 		{
 			Mesh& mesh = child->Parent->GetComponent<Mesh>();
-			child->Parent->AddComponent<SelfDestruct>(5.f);
+			//child->Parent->AddComponent<SelfDestruct>(5.f);
 			mesh.MeshMaterial->DiffuseColor = block.Color;
 			block.Color = mesh.MeshMaterial->DiffuseColor;
 		}
@@ -461,6 +488,7 @@ void APCore::OnStop()
 		//ent.MarkForDelete();
 		RecusiveDeleteBlock(ent, &ent.GetComponent<Transform>());
 	}
+	GetWorld().Simulate();
 }
 
 void APCore::Reset(Transform& transform)
@@ -472,7 +500,6 @@ void APCore::Reset(Transform& transform)
 	pos[0] = 0.0f;
 	pos[2] = 0.0f;
 	transform.SetPosition(pos);
-	BRUH("You Lost!");
 }
 
 unsigned int APCore::UpdateScore()
@@ -511,8 +538,82 @@ void APCore::LoseGame()
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
 
-		view.SetMessage("You Fucked Up");
-		OnStop();
+		view.SetMessage("uh oh");
+		m_currentBlock->AddComponent<Rigidbody>();
+		//OnStop();
 	}
 	m_state = GameState::Lost;
+}
+
+Vector3 APCore::Darken(const Vector3& OutColor, float percent)
+{
+	return Vector3(OutColor.X() - OutColor.X() * percent, OutColor.Y() - OutColor.Y() * percent, OutColor.Z() - OutColor.Z() * percent);
+}
+
+
+Vector3 APCore::GetHue(float percent)
+{
+	int normalized = static_cast<int>(percent * 256.f * 6.f);
+	int x = normalized % 256;
+
+	int red = 0;
+	int green = 0;
+	int blue = 0;
+	switch (normalized / 256)
+	{
+	// Red
+	case 0:
+		red = 255;
+		green = x;
+		break;
+	// Yellow
+	case 1:
+		red = 255 - x;
+		green = 255;
+		break;
+	// Green
+	case 2:
+		green = 255;
+		blue = x;
+		break;
+	// Cyan
+	case 3:
+		green = 255 - x;
+		blue = 255;
+		break;
+	// Blue
+	case 4:
+		red = x;
+		blue = 255;
+		break;
+	// Magenta
+	case 5:
+		red = 255;
+		blue = 255 - x;
+		break;
+	}
+
+	return Vector3(red / 255.f, green / 255.f, blue / 255.f);
+}
+
+void APCore::GenerateNextHue()
+{
+	if (!initialized && testPercent == 0)
+	{
+		testPercent = random(0, 100);
+		initialized = true;
+	}
+
+	testPercent += 1.f;
+	blockPercent = testPercent - 50.f;
+
+	if (testPercent >= 100)
+	{
+		testPercent = 0;
+	}
+
+	if (blockPercent < 0.f)
+	{
+		blockPercent += 100;
+	}
 }
