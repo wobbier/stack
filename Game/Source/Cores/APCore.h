@@ -14,7 +14,6 @@
 #include "Mathf.h"
 #include "Math/Random.h"
 #include "ECS/EntityHandle.h"
-#include "Math/Color.h"
 
 class StackBlock final
 	: public Component<StackBlock>
