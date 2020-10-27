@@ -97,9 +97,9 @@ void APCore::Update(float dt)
 		{
 			if (block.BlockDirection)
 			{
-				if (m_currentPosition.Z() < kStartDistance)
+				if (m_currentPosition.z < kStartDistance)
 				{
-					m_currentPosition.SetZ(m_currentPosition.Z() + (block.BlockMoveSpeed * dt));
+					m_currentPosition.z = (m_currentPosition.z + (block.BlockMoveSpeed * dt));
 				}
 				else
 				{
@@ -108,9 +108,9 @@ void APCore::Update(float dt)
 			}
 			else
 			{
-				if (m_currentPosition.Z() > -kStartDistance)
+				if (m_currentPosition.z > -kStartDistance)
 				{
-					m_currentPosition.SetZ(m_currentPosition.Z() - (block.BlockMoveSpeed * dt));
+					m_currentPosition.z = (m_currentPosition.z - (block.BlockMoveSpeed * dt));
 				}
 				else
 				{
@@ -123,9 +123,9 @@ void APCore::Update(float dt)
 		{
 			if (block.BlockDirection)
 			{
-				if (m_currentPosition.X() < kStartDistance)
+				if (m_currentPosition.x < kStartDistance)
 				{
-					m_currentPosition.SetX(m_currentPosition.X() + (block.BlockMoveSpeed * dt));
+					m_currentPosition.x = (m_currentPosition.x + (block.BlockMoveSpeed * dt));
 				}
 				else
 				{
@@ -134,9 +134,9 @@ void APCore::Update(float dt)
 			}
 			else
 			{
-				if (m_currentPosition.X() > -kStartDistance)
+				if (m_currentPosition.x > -kStartDistance)
 				{
-					m_currentPosition.SetX(m_currentPosition.X() - (block.BlockMoveSpeed * dt));
+					m_currentPosition.x = (m_currentPosition.x - (block.BlockMoveSpeed * dt));
 				}
 				else
 				{
@@ -154,7 +154,7 @@ void APCore::Update(float dt)
 	Transform& camTransform = m_mainCamera->GetComponent<Transform>();
 	if (m_fracJourney < 1.0f)
 	{
-		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.GetPosition().X(), m_currentPosition.Y() + m_cameraHeightOffset, camTransform.GetPosition().Z()), m_fracJourney));
+		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.GetPosition().x, m_currentPosition.y + m_cameraHeightOffset, camTransform.GetPosition().z), m_fracJourney));
 	}
 	auto Keyboard = GetEngine().GetInput().GetKeyboardState();
 	auto Controller = GetEngine().GetInput().GetControllerState();
@@ -225,18 +225,18 @@ void APCore::SpawnNextBlock()
 	StackBlock& block = m_currentBlock->AddComponent<StackBlock>();
 	Model& model = m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
 
-	m_currentStackSize.SetY(.3f);
+	m_currentStackSize.y = .3f;
 	transform.SetScale(m_currentStackSize);
 
 	block.MoveOnX = !prevBlock.MoveOnX;
 	if (!block.MoveOnX)
 	{
-		transform.SetPosition(prevTransform.GetPosition() + Vector3(0.f, (prevTransform.GetScale().Y()) + (.3f), -kStartDistance));
+		transform.SetPosition(prevTransform.GetPosition() + Vector3(0.f, (prevTransform.GetScale().y) + (.3f), -kStartDistance));
 		block.BlockDirection = !block.BlockDirection;
 	}
 	else
 	{
-		transform.SetPosition(prevTransform.GetPosition() + Vector3(kStartDistance, (prevTransform.GetScale().Y()) + (.3f), 0.f));
+		transform.SetPosition(prevTransform.GetPosition() + Vector3(kStartDistance, (prevTransform.GetScale().y) + (.3f), 0.f));
 	}
 
 	if (transform.Parent->HasComponent<Mesh>())
@@ -268,7 +268,7 @@ void APCore::SetupCamera()
 	Transform* cameraEnt = GetEngine().SceneNodes->RootTransform->GetComponent<Transform>().GetChildByName("Main Camera");
 	m_mainCamera = cameraEnt->Parent;
 
-	cameraEnt->SetPosition(Vector3(-5.f, m_currentBlock->GetComponent<Transform>().GetPosition().Y() + 5, 5.f));
+	cameraEnt->SetPosition(Vector3(-5.f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, 5.f));
 	cameraEnt->SetRotation(Vector3(0.f, 45.f, 0.f));
 	Camera& cam = m_mainCamera->GetComponent<Camera>();
 	cam.Projection = Moonlight::ProjectionType::Orthographic;
@@ -288,15 +288,15 @@ bool APCore::EndBlock()
 
 	if (block.MoveOnX)
 	{
-		float distanceFailedX = prevPos.X() - pos.X();
+		float distanceFailedX = prevPos.x - pos.x;
 		float distAbs = Mathf::Abs(distanceFailedX);
 		if (distAbs > kErrorMargin)
 		{
-			float scaleThing = m_currentStackSize.X() - (distAbs / 2.f);
-			float remaining = m_currentStackSize.X() - scaleThing;
-			m_currentStackSize.SetX(scaleThing);
+			float scaleThing = m_currentStackSize.x - (distAbs / 2.f);
+			float remaining = m_currentStackSize.x - scaleThing;
+			m_currentStackSize.x = scaleThing;
 
-			if (m_currentStackSize.X() <= 0.f)
+			if (m_currentStackSize.x <= 0.f)
 			{
 				Reset(transform);
 				LoseGame();
@@ -304,46 +304,46 @@ bool APCore::EndBlock()
 			}
 			transform.SetScale(m_currentStackSize);
 
-			float middle = prevTransform.GetPosition().X() + (transform.GetPosition().X() / 2.f);
-			float finalPosX = middle - (prevTransform.GetPosition().X() / 2.f);
+			float middle = prevTransform.GetPosition().x + (transform.GetPosition().x / 2.f);
+			float finalPosX = middle - (prevTransform.GetPosition().x / 2.f);
 
-			pos.SetZ(prevTransform.GetPosition().Z());
+			pos.z = prevTransform.GetPosition().z;
 
-			float direction = finalPosX - prevTransform.GetPosition().X();
+			float direction = finalPosX - prevTransform.GetPosition().x;
 			if (direction > 0)
 			{
-				pos.SetX(finalPosX + transform.GetScale().X() + remaining);
+				pos.x = (finalPosX + transform.GetScale().x + remaining);
 			}
 			else
 			{
-				pos.SetX(finalPosX - transform.GetScale().X() - remaining);
+				pos.x = (finalPosX - transform.GetScale().x - remaining);
 			}
 
 			CreateBrokenPiece(remaining, pos, block.MoveOnX, (direction > 0));
-			pos.SetX(finalPosX);
+			pos.x = finalPosX;
 		}
 		else
 		{
-			if (m_currentStackSize.X() > kBoundsLimit)
+			if (m_currentStackSize.x > kBoundsLimit)
 			{
 				LoseGame();
 				return false;
 			}
-			pos.SetX(prevPos.X());
-			pos.SetZ(prevPos.Z());
+			pos.x = prevPos.x;
+			pos.z = prevPos.z;
 		}
 	}
 	else
 	{
-		float distanceFailedZ = prevPos.Z() - pos.Z();
+		float distanceFailedZ = prevPos.z - pos.z;
 		float distAbs = Mathf::Abs(distanceFailedZ);
 		if (distAbs > kErrorMargin)
 		{
-			float scaleThing = m_currentStackSize.Z() - (distAbs / 2.f);
-			float remaining = m_currentStackSize.Z() - scaleThing;
-			m_currentStackSize.SetZ(scaleThing);
+			float scaleThing = m_currentStackSize.z - (distAbs / 2.f);
+			float remaining = m_currentStackSize.z - scaleThing;
+			m_currentStackSize.z = scaleThing;
 
-			if (m_currentStackSize.Z() <= 0.f)
+			if (m_currentStackSize.z <= 0.f)
 			{
 				Reset(transform);
 				LoseGame();
@@ -351,32 +351,32 @@ bool APCore::EndBlock()
 			}
 			transform.SetScale(m_currentStackSize);
 
-			float middle = prevTransform.GetPosition().Z() + (transform.GetPosition().Z() / 2.f);
-			float finalPosZ = middle - (prevTransform.GetPosition().Z() / 2.f);
+			float middle = prevTransform.GetPosition().z + (transform.GetPosition().z / 2.f);
+			float finalPosZ = middle - (prevTransform.GetPosition().z / 2.f);
 
-			pos.SetX(prevTransform.GetPosition().X());
-			float direction = finalPosZ - prevTransform.GetPosition().Z();
+			pos.x = prevTransform.GetPosition().x;
+			float direction = finalPosZ - prevTransform.GetPosition().z;
 			if (direction > 0)
 			{
-				pos.SetZ(finalPosZ + transform.GetScale().Z() + remaining);
+				pos.z = (finalPosZ + transform.GetScale().z + remaining);
 			}
 			else
 			{
-				pos.SetZ(finalPosZ - transform.GetScale().Z() - remaining);
+				pos.z = (finalPosZ - transform.GetScale().z - remaining);
 			}
 			CreateBrokenPiece(remaining, pos, block.MoveOnX, (direction > 0));
 
-			pos.SetZ(finalPosZ);
+			pos.z = (finalPosZ);
 		}
 		else
 		{
-			if (m_currentStackSize.Z() > kBoundsLimit)
+			if (m_currentStackSize.z > kBoundsLimit)
 			{
 				LoseGame();
 				return false;
 			}
-			pos.SetX(prevPos.X());
-			pos.SetZ(prevPos.Z());
+			pos.x = prevPos.x;
+			pos.z = prevPos.z;
 		}
 	}
 
@@ -395,14 +395,16 @@ void APCore::CreateBrokenPiece(float amountLost, Vector3 position, bool blockMov
 	Vector3 stack = m_currentStackSize;
 	if (block.MoveOnX)
 	{
-		stack.SetX(Mathf::Abs(amountLost));
+		stack.x = Mathf::Abs(amountLost);
 	}
 	else
 	{
-		stack.SetZ(Mathf::Abs(amountLost));
+		stack.z = Mathf::Abs(amountLost);
 	}
 	transform.SetPosition(position);
 	transform.SetScale(stack);
+	transform.SetRotation(Vector3());
+
 	broken->AddComponent<Model>("Assets/Cube.fbx");
 	broken->AddComponent<SelfDestruct>(5.f);
 	Rigidbody& rigidbody = broken->AddComponent<Rigidbody>(Rigidbody::ColliderType::Box);
@@ -434,7 +436,6 @@ void APCore::CreateBrokenPiece(float amountLost, Vector3 position, bool blockMov
 		if (broken->HasComponent<Mesh>())
 		{
 			Mesh& mesh = broken->GetComponent<Mesh>();
-			broken->AddComponent<SelfDestruct>(5.f);
 			mesh.MeshMaterial->DiffuseColor = block.Color;
 			block.Color = mesh.MeshMaterial->DiffuseColor;
 		}
@@ -456,8 +457,8 @@ void RecusiveDeleteBlock(Entity& ent, Transform* trans)
 
 void APCore::Reset(Transform& transform)
 {
-	m_currentStackSize.SetX(2.f);
-	m_currentStackSize.SetZ(2.f);
+	m_currentStackSize.x = 2.f;
+	m_currentStackSize.z = 2.f;
 }
 
 unsigned int APCore::UpdateScore()
@@ -477,7 +478,7 @@ unsigned int APCore::UpdateScore()
 
 void APCore::LoseGame()
 {
-	m_currentStackSize.SetX(2.f);
+	m_currentStackSize.x = 2.f;
 	if (m_uiScore)
 	{
 		// #TODO This could be any other BasicUIView
@@ -492,7 +493,7 @@ void APCore::LoseGame()
 
 Vector3 APCore::Darken(const Vector3& OutColor, float percent)
 {
-	return Vector3(OutColor.X() - OutColor.X() * percent, OutColor.Y() - OutColor.Y() * percent, OutColor.Z() - OutColor.Z() * percent);
+	return Vector3(OutColor.x - OutColor.x * percent, OutColor.y - OutColor.y * percent, OutColor.z - OutColor.z * percent);
 }
 
 
