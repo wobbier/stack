@@ -15,6 +15,8 @@
 #include "Engine/Engine.h"
 #include "Components/Camera.h"
 #include "Components/Graphics/Mesh.h"
+#include "Primitives/Plane.h"
+#include "StreakFXCore.h"
 
 static int testColors = 0;
 
@@ -331,6 +333,8 @@ bool APCore::EndBlock()
 			}
 			pos.x = prevPos.x;
 			pos.z = prevPos.z;
+			m_currentStreak++;
+			AddStreakFX(pos, m_currentStreak);
 		}
 	}
 	else
@@ -377,6 +381,8 @@ bool APCore::EndBlock()
 			}
 			pos.x = prevPos.x;
 			pos.z = prevPos.z;
+			m_currentStreak++;
+			AddStreakFX(pos, m_currentStreak);
 		}
 	}
 
@@ -388,6 +394,7 @@ bool APCore::EndBlock()
 
 void APCore::CreateBrokenPiece(float amountLost, Vector3 position, bool blockMovingOnX, bool PositiveDirection)
 {
+	m_currentStreak = 0;
 	StackBlock block = m_currentBlock->GetComponent<StackBlock>();
 
 	EntityHandle broken = GetWorld().CreateEntity();
@@ -464,7 +471,7 @@ void APCore::Reset(Transform& transform)
 unsigned int APCore::UpdateScore()
 {
 	size_t ents = GetEntities().size();
-	unsigned int Score = (ents > 0 ? ents - 1 : 0);
+	unsigned int Score = static_cast<unsigned int>(ents > 0 ? ents - 1 : 0);
 
 	if (m_uiScore)
 	{
@@ -582,6 +589,32 @@ void APCore::OnEditorInspect()
 	Base::OnEditorInspect();
 	ImGui::DragFloat("Camera Height Offset", &m_cameraHeightOffset);
 	ImGui::DragFloat2("Grid Size", &m_gridSnapSize[0]);
+}
+
+void APCore::AddStreakFX(Vector3 pos, int streakNum)
+{
+	auto plane = GetWorld().CreateEntity();
+	plane->AddComponent<SelfDestruct>(0.3f);
+	Vector3 currentScale = m_currentBlock->GetComponent<Transform>().GetScale();
+	pos.y -= (currentScale.y);
+	Transform& transform = plane->AddComponent<Transform>();
+	transform.SetPosition(pos);
+	currentScale.y = 1.f;
+	transform.SetScale(currentScale);
+	plane->AddComponent<StreakFX>();
+	Mesh& mesh = plane->AddComponent<Mesh>(new PlaneMesh());
+	SharedPtr<Moonlight::Texture> tex;
+	if (streakNum == 1)
+	{
+		tex = ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/Textures/Streak1.png"));
+	}
+	else
+	{
+		tex = ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/Textures/Streak2.png"));
+	}
+
+	mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Diffuse, tex);
+	mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Opacity, tex);
 }
 
 #endif

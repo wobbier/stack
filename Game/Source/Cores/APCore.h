@@ -53,6 +53,8 @@ private:
 	void SpawnNextBlock();
 	void CreateBrokenPiece(float amountLost, Vector3 position, bool blockMovingOnX, bool PositiveDirection);
 
+	void AddStreakFX(Vector3 pos, int streakNum);
+
 	void SetupCamera();
 	bool EndBlock();
 	unsigned int UpdateScore();
@@ -67,7 +69,7 @@ private:
 	Vector3 m_currentPosition;
 	Vector3 m_currentStackSize;
 	Vector2 m_gridSnapSize;
-
+	float m_currentStreak = 0;
 
 	float m_startTime = 0.f;
 	float m_totalTime = 0.f;

@@ -1,22 +1,27 @@
 {
     "Cores": [
         {
-            "Type": "SelfDestructor"
+            "Type": "PhysicsCore"
         },
         {
-            "Type": "AudioCore"
+            "Type": "SelfDestructor"
         },
         {
             "Type": "APCore"
         },
         {
-            "Type": "PhysicsCore"
+            "Type": "StreakFXCore"
         }
     ],
     "Scene": [
         {
             "Components": [
                 {
+                    "ClearColor": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
                     "Far": 2000.0,
                     "IsCurrent": true,
                     "Near": 0.10000000149011612,
