@@ -4,8 +4,6 @@
 #include "StackGame.h"
 
 #include <ppltasks.h>
-#include "Renderer.h"
-#include "Device/DX11Device.h"
 #include "Engine/Engine.h"
 
 using namespace concurrency;
@@ -80,7 +78,7 @@ void App::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
 
 	//create_task([this, deferral]()
 	//{
-        GetEngine().GetRenderer().GetDevice().Trim();
+        //GetEngine().GetRenderer().GetDevice().Trim();
 
 		// Insert your code here.
 

@@ -158,57 +158,57 @@ void APCore::Update(float dt)
 	{
 		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.GetPosition().x, m_currentPosition.y + m_cameraHeightOffset, camTransform.GetPosition().z), m_fracJourney));
 	}
-	auto Keyboard = GetEngine().GetInput().GetKeyboardState();
-	auto Controller = GetEngine().GetInput().GetControllerState();
-	if (!m_isKeyPressed && (Keyboard.P || Controller.buttons.y))
-	{
-		auto entities = GetEntities();
-		for (Entity& entity : entities)
-		{
-			if (entity.HasComponent<Rigidbody>())
-			{
-				entity.GetComponent<Rigidbody>().SetMass(1.0f);
-			}
-		}
-		m_isKeyPressed = false;
-	}
-	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a) /*|| testColors <= 40*/)
-	{
-		switch (m_state)
-		{
-		case GameState::Start:
-			//OnStart();
-			m_state = GameState::Active;
-		case GameState::Active:
-		{
-			testColors++;
-			bool canContinue = true;
-			if (m_previousBlock)
-			{
-				canContinue = EndBlock();
-			}
-			if (canContinue)
-			{
-				SpawnNextBlock();
-			}
-			break;
-		}
-		case GameState::Lost:
-		{
-			m_state = GameState::Restart;
-		}
-		case GameState::Restart:
-			ClearBlocks();
-			OnStart();
-			m_state = GameState::Start;
-			break;
-		default:
-			break;
+	//auto Keyboard = GetEngine().GetInput().GetKeyboardState();
+	//auto Controller = GetEngine().GetInput().GetControllerState();
+	//if (!m_isKeyPressed && (Keyboard.P || Controller.buttons.y))
+	//{
+	//	auto entities = GetEntities();
+	//	for (Entity& entity : entities)
+	//	{
+	//		if (entity.HasComponent<Rigidbody>())
+	//		{
+	//			entity.GetComponent<Rigidbody>().SetMass(1.0f);
+	//		}
+	//	}
+	//	m_isKeyPressed = false;
+	//}
+	//if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a) /*|| testColors <= 40*/)
+	//{
+	//	switch (m_state)
+	//	{
+	//	case GameState::Start:
+	//		//OnStart();
+	//		m_state = GameState::Active;
+	//	case GameState::Active:
+	//	{
+	//		testColors++;
+	//		bool canContinue = true;
+	//		if (m_previousBlock)
+	//		{
+	//			canContinue = EndBlock();
+	//		}
+	//		if (canContinue)
+	//		{
+	//			SpawnNextBlock();
+	//		}
+	//		break;
+	//	}
+	//	case GameState::Lost:
+	//	{
+	//		m_state = GameState::Restart;
+	//	}
+	//	case GameState::Restart:
+	//		ClearBlocks();
+	//		OnStart();
+	//		m_state = GameState::Start;
+	//		break;
+	//	default:
+	//		break;
 
-		}
-		m_isKeyPressed = false;
-	}
-	m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
+	//	}
+	//	m_isKeyPressed = false;
+	//}
+	//m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
 }
 
 void APCore::SpawnNextBlock()
@@ -478,7 +478,7 @@ unsigned int APCore::UpdateScore()
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
 
-		view.UpdateScore(Score);
+		//view.UpdateScore(Score);
 	}
 	return Score;
 }
@@ -491,7 +491,7 @@ void APCore::LoseGame()
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
 
-		view.SetMessage("uh oh");
+		//view.SetMessage("uh oh");
 		m_currentBlock->AddComponent<Rigidbody>();
 		//OnStop();
 	}
@@ -581,16 +581,6 @@ void APCore::ClearBlocks()
 	GetWorld().Simulate();
 }
 
-
-#if ME_EDITOR
-
-void APCore::OnEditorInspect()
-{
-	Base::OnEditorInspect();
-	ImGui::DragFloat("Camera Height Offset", &m_cameraHeightOffset);
-	ImGui::DragFloat2("Grid Size", &m_gridSnapSize[0]);
-}
-
 void APCore::AddStreakFX(Vector3 pos, int streakNum)
 {
 	auto plane = GetWorld().CreateEntity();
@@ -615,6 +605,16 @@ void APCore::AddStreakFX(Vector3 pos, int streakNum)
 
 	mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Diffuse, tex);
 	mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Opacity, tex);
+}
+
+
+#if ME_EDITOR
+
+void APCore::OnEditorInspect()
+{
+	Base::OnEditorInspect();
+	ImGui::DragFloat("Camera Height Offset", &m_cameraHeightOffset);
+	ImGui::DragFloat2("Grid Size", &m_gridSnapSize[0]);
 }
 
 #endif

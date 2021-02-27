@@ -1,6 +1,5 @@
 #pragma once
 #include "Components/UI/BasicUIView.h"
-#include "UI/JSHelpers.h"
 
 namespace ultralight { class View; }
 
