@@ -8,7 +8,7 @@ class StackGame
 	: public Game
 {
 public:
-	StackGame();
+	StackGame(int argc, char** argv);
 	~StackGame();
 
 	virtual void OnInitialize() override;

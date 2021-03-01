@@ -19,8 +19,8 @@
 #include "Events/SceneEvents.h"
 #include "CLog.h"
 
-StackGame::StackGame()
-	: Game()
+StackGame::StackGame(int argc, char** argv)
+	: Game(argc, argv)
 {
 }
 
