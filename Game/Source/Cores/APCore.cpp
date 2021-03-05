@@ -64,7 +64,7 @@ void APCore::OnStart()
 	StackBlock& prevBlock = m_currentBlock->AddComponent<StackBlock>();
 	prevBlock.BlockMoveSpeed = 0.f;
 	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
-
+	//m_currentBlock->AddComponent<Mesh>(MeshType::Cube);
 	GenerateNextHue();
 
 	Camera::CurrentCamera->ClearColor = Darken(GetHue(testPercent / 100.f), 0.20f);
@@ -158,57 +158,57 @@ void APCore::Update(float dt)
 	{
 		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.GetPosition().x, m_currentPosition.y + m_cameraHeightOffset, camTransform.GetPosition().z), m_fracJourney));
 	}
-	//auto Keyboard = GetEngine().GetInput().GetKeyboardState();
-	//auto Controller = GetEngine().GetInput().GetControllerState();
-	//if (!m_isKeyPressed && (Keyboard.P || Controller.buttons.y))
-	//{
-	//	auto entities = GetEntities();
-	//	for (Entity& entity : entities)
-	//	{
-	//		if (entity.HasComponent<Rigidbody>())
-	//		{
-	//			entity.GetComponent<Rigidbody>().SetMass(1.0f);
-	//		}
-	//	}
-	//	m_isKeyPressed = false;
-	//}
-	//if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a) /*|| testColors <= 40*/)
-	//{
-	//	switch (m_state)
-	//	{
-	//	case GameState::Start:
-	//		//OnStart();
-	//		m_state = GameState::Active;
-	//	case GameState::Active:
-	//	{
-	//		testColors++;
-	//		bool canContinue = true;
-	//		if (m_previousBlock)
-	//		{
-	//			canContinue = EndBlock();
-	//		}
-	//		if (canContinue)
-	//		{
-	//			SpawnNextBlock();
-	//		}
-	//		break;
-	//	}
-	//	case GameState::Lost:
-	//	{
-	//		m_state = GameState::Restart;
-	//	}
-	//	case GameState::Restart:
-	//		ClearBlocks();
-	//		OnStart();
-	//		m_state = GameState::Start;
-	//		break;
-	//	default:
-	//		break;
 
-	//	}
-	//	m_isKeyPressed = false;
-	//}
-	//m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
+	auto input = GetEngine().GetInput();
+	if (!m_isKeyPressed && (input.IsKeyDown(KeyCode::P)/* || Controller.buttons.y)*/))
+	{
+		auto& entities = GetEntities();
+		for (Entity& entity : entities)
+		{
+			if (entity.HasComponent<Rigidbody>())
+			{
+				entity.GetComponent<Rigidbody>().SetMass(1.0f);
+			}
+		}
+		m_isKeyPressed = false;
+	}
+	if (!m_isKeyPressed && (input.IsKeyDown(KeyCode::Space) /*|| Controller.buttons.a*/) /*|| testColors <= 40*/)
+	{
+		switch (m_state)
+		{
+		case GameState::Start:
+			//OnStart();
+			m_state = GameState::Active;
+		case GameState::Active:
+		{
+			testColors++;
+			bool canContinue = true;
+			if (m_previousBlock)
+			{
+				canContinue = EndBlock();
+			}
+			if (canContinue)
+			{
+				SpawnNextBlock();
+			}
+			break;
+		}
+		case GameState::Lost:
+		{
+			m_state = GameState::Restart;
+		}
+		case GameState::Restart:
+			ClearBlocks();
+			OnStart();
+			m_state = GameState::Start;
+			break;
+		default:
+			break;
+
+		}
+		m_isKeyPressed = false;
+	}
+	m_isKeyPressed = (input.IsKeyDown(KeyCode::Space)/* || Controller.buttons.a*/);
 }
 
 void APCore::SpawnNextBlock()
