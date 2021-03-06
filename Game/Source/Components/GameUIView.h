@@ -1,6 +1,8 @@
 #pragma once
 #include "Components/UI/BasicUIView.h"
 
+#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
+
 namespace ultralight { class View; }
 
 class GameUIView
@@ -24,3 +26,5 @@ private:
 };
 
 ME_REGISTER_COMPONENT(GameUIView)
+
+#endif

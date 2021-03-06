@@ -1,0 +1,1 @@
+./Engine/Tools/premake5 --file=premake.lua xcode4 -platform=macOS --project-name=Stack

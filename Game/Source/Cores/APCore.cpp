@@ -156,7 +156,9 @@ void APCore::Update(float dt)
 	Transform& camTransform = m_mainCamera->GetComponent<Transform>();
 	if (m_fracJourney < 1.0f)
 	{
+#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.GetPosition().x, m_currentPosition.y + m_cameraHeightOffset, camTransform.GetPosition().z), m_fracJourney));
+#endif
 	}
 
 	auto input = GetEngine().GetInput();
@@ -475,9 +477,11 @@ unsigned int APCore::UpdateScore()
 
 	if (m_uiScore)
 	{
+        
+#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
-
+#endif
 		//view.UpdateScore(Score);
 	}
 	return Score;
@@ -488,9 +492,11 @@ void APCore::LoseGame()
 	m_currentStackSize.x = 2.f;
 	if (m_uiScore)
 	{
+        
+#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
-
+#endif
 		//view.SetMessage("uh oh");
 		m_currentBlock->AddComponent<Rigidbody>();
 		//OnStop();

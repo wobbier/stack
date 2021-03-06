@@ -1,4 +1,7 @@
 #include "GameUIView.h"
+
+#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
+
 #include "Ultralight/View.h"
 
 GameUIView::GameUIView()
@@ -43,4 +46,6 @@ void GameUIView::OnEditorInspect()
 {
 
 }
+#endif
+
 #endif
