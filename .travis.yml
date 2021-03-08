@@ -1,0 +1,42 @@
+language: cpp
+matrix:
+  include:
+    - compiler: clang
+      os: osx
+	  osx_image: xcode12u
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-8
+    - g++-8
+    - clang
+    - libgl1-mesa-dev
+    - x11proto-core-dev
+    - libx11-dev
+
+before_script:
+  - ls
+  - chmod 0755 ./GenerateSolution.command
+  - sh ./GenerateSolution.command
+  - cd Engine/ThirdParty
+  - cd Assimp
+  - cmake . -G Xcode -DBUILD_SHARED_LIBS=false
+  - cd ../Bullet
+  - cmake . -G Xcode -DUSE_MSVC_RUNTIME_LIBRARY_DLL=true
+  - cd ../../../
+
+script:
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make build CXX="g++-8" CC="gcc-8"; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then xctool -workspace Stack.xcworkspace -scheme Debug -sdk macosx ARCHS=x86_64 ONLY_ACTIVE_ARCH=NO; fi
+
+branches:
+  only:
+    - macOS
+
+notifications:
+  email: false
+
+osx_image: xcode11
