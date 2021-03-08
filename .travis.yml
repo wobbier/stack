@@ -29,7 +29,7 @@ before_script:
   - cd ../../../
 
 script:
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then xctool -workspace Stack.xcworkspace -scheme Debug -sdk macosx ARCHS=x86_64 ONLY_ACTIVE_ARCH=NO; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then xcodebuild -workspace Stack.xcworkspace -scheme Stack; fi
 
 branches:
   only:
