@@ -478,7 +478,7 @@ unsigned int APCore::UpdateScore()
 	if (m_uiScore)
 	{
         
-#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
+#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
 #endif
@@ -493,7 +493,7 @@ void APCore::LoseGame()
 	if (m_uiScore)
 	{
         
-#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
+#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
 #endif

@@ -1,7 +1,7 @@
 #pragma once
 #include "Components/UI/BasicUIView.h"
 
-#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
+#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 
 namespace ultralight { class View; }
 

@@ -1,7 +1,7 @@
 #include "IntroUI.h"
 #include "Ultralight/View.h"
 
-#if ME_PLATFORM_UWP || ME_PLALTFORM_WIN64
+#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 
 #include "UI/JSHelpers.h"
 #include "Events/SceneEvents.h"
