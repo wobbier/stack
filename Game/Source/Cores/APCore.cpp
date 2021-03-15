@@ -272,13 +272,11 @@ void APCore::SetupCamera()
 	Transform* cameraEnt = GetEngine().SceneNodes->RootTransform->GetComponent<Transform>().GetChildByName("Main Camera");
 	m_mainCamera = cameraEnt->Parent;
 
-	cameraEnt->SetPosition(Vector3(-5.f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, 5.f));
-	cameraEnt->SetRotation(Vector3(0.f, 45.f, 0.f));
+	cameraEnt->SetPosition(Vector3(-2.5f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, -2.5f));
+	cameraEnt->SetRotation(Vector3(35.f, 45.f, 0.f));
 	Camera& cam = m_mainCamera->GetComponent<Camera>();
 	cam.Projection = Moonlight::ProjectionType::Orthographic;
-	cameraEnt->LookAt((Vector3(0.f, 0.f, 0.f) - cameraEnt->GetPosition()).Normalized());
-
-	cameraEnt->SetPosition(cameraEnt->GetPosition() + Vector3(0.f, 10.f, 0.f));
+	cam.OrthographicSize = 75.f;
 }
 
 bool APCore::EndBlock()

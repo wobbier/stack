@@ -75,7 +75,7 @@ private:
 	float m_totalTime = 0.f;
 	float m_cameraTravelDistance;
 	float m_cameraFocusSpeed = 2.f;
-	float m_cameraHeightOffset = 10.f;
+	float m_cameraHeightOffset = 5.f;
 	bool m_isKeyPressed = false;
 	float m_fracJourney = 0.f;
 	GameState m_state = GameState::Start;
