@@ -156,9 +156,7 @@ void APCore::Update(float dt)
 	Transform& camTransform = m_mainCamera->GetComponent<Transform>();
 	if (m_fracJourney < 1.0f)
 	{
-#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.GetPosition().x, m_currentPosition.y + m_cameraHeightOffset, camTransform.GetPosition().z), m_fracJourney));
-#endif
 	}
 
 	auto input = GetEngine().GetInput();
