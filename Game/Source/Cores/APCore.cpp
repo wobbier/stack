@@ -477,8 +477,8 @@ unsigned int APCore::UpdateScore()
 #if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
+		view.UpdateScore(Score);
 #endif
-		//view.UpdateScore(Score);
 	}
 	return Score;
 }
@@ -492,8 +492,8 @@ void APCore::LoseGame()
 #if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
+		view.SetMessage("uh oh");
 #endif
-		//view.SetMessage("uh oh");
 		m_currentBlock->AddComponent<Rigidbody>();
 		//OnStop();
 	}
