@@ -473,12 +473,9 @@ unsigned int APCore::UpdateScore()
 
 	if (m_uiScore)
 	{
-        
-#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
 		view.UpdateScore(Score);
-#endif
 	}
 	return Score;
 }
@@ -488,12 +485,10 @@ void APCore::LoseGame()
 	m_currentStackSize.x = 2.f;
 	if (m_uiScore)
 	{
-        
-#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
 		view.SetMessage("uh oh");
-#endif
+        
 		m_currentBlock->AddComponent<Rigidbody>();
 		//OnStop();
 	}
