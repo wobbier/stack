@@ -49,7 +49,7 @@ void APCore::OnStart()
 
 	{
 		SceneGraph* graph = GetEngine().SceneNodes;
-		Transform* uiEnt = graph->RootTransform->GetComponent<Transform>().GetChildByName("UI");
+		Transform* uiEnt = graph->RootTransformEntity->GetComponent<Transform>().GetChildByName("UI");
 		if (!uiEnt)
 		{
 			return;
@@ -267,16 +267,14 @@ void APCore::SpawnNextBlock()
 
 void APCore::SetupCamera()
 {
-	Transform* cameraEnt = GetEngine().SceneNodes->RootTransform->GetComponent<Transform>().GetChildByName("Main Camera");
+	Transform* cameraEnt = GetEngine().SceneNodes->RootTransformEntity->GetComponent<Transform>().GetChildByName("Main Camera");
 	m_mainCamera = cameraEnt->Parent;
 
-	cameraEnt->SetPosition(Vector3(-5.f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, 5.f));
-	cameraEnt->SetRotation(Vector3(0.f, 45.f, 0.f));
+	cameraEnt->SetPosition(Vector3(-2.5f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, -2.5f));
+	cameraEnt->SetRotation(Vector3(35.f, 45.f, 0.f));
 	Camera& cam = m_mainCamera->GetComponent<Camera>();
 	cam.Projection = Moonlight::ProjectionType::Orthographic;
-	cameraEnt->LookAt((Vector3(0.f, 0.f, 0.f) - cameraEnt->GetPosition()).Normalized());
-
-	cameraEnt->SetPosition(cameraEnt->GetPosition() + Vector3(0.f, 10.f, 0.f));
+	cam.OrthographicSize = 75.f;
 }
 
 bool APCore::EndBlock()
@@ -477,8 +475,7 @@ unsigned int APCore::UpdateScore()
 	{
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
-
-		//view.UpdateScore(Score);
+		view.UpdateScore(Score);
 	}
 	return Score;
 }
@@ -490,8 +487,8 @@ void APCore::LoseGame()
 	{
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
-
-		//view.SetMessage("uh oh");
+		view.SetMessage("uh oh");
+        
 		m_currentBlock->AddComponent<Rigidbody>();
 		//OnStop();
 	}
