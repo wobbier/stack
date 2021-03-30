@@ -33,7 +33,7 @@ script:
 
 branches:
   only:
-    - macOS
+    - master
 
 notifications:
   email: false

@@ -1,1 +1,1 @@
-%~dp0Engine\Tools\premake5.exe --file=premake.lua vs2017 --gfxapi=directx --project-name=Stack --project-type=Win64
+%~dp0Engine\Tools\premake5.exe --file=premake.lua vs2017 --project-name=Stack --project-type=Win64
