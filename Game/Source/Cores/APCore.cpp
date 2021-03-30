@@ -49,7 +49,7 @@ void APCore::OnStart()
 
 	{
 		SceneGraph* graph = GetEngine().SceneNodes;
-		Transform* uiEnt = graph->RootTransform->GetComponent<Transform>().GetChildByName("UI");
+		Transform* uiEnt = graph->RootTransformEntity->GetComponent<Transform>().GetChildByName("UI");
 		if (!uiEnt)
 		{
 			return;
@@ -267,7 +267,7 @@ void APCore::SpawnNextBlock()
 
 void APCore::SetupCamera()
 {
-	Transform* cameraEnt = GetEngine().SceneNodes->RootTransform->GetComponent<Transform>().GetChildByName("Main Camera");
+	Transform* cameraEnt = GetEngine().SceneNodes->RootTransformEntity->GetComponent<Transform>().GetChildByName("Main Camera");
 	m_mainCamera = cameraEnt->Parent;
 
 	cameraEnt->SetPosition(Vector3(-2.5f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, -2.5f));
