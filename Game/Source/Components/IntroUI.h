@@ -1,5 +1,8 @@
 #pragma once
 #include "Components/UI/BasicUIView.h"
+
+#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
+
 #include "UI/JSHelpers.h"
 
 namespace ultralight { class View; }
@@ -22,3 +25,5 @@ private:
 };
 
 ME_REGISTER_COMPONENT(IntroUI)
+
+#endif

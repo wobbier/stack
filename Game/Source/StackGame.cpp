@@ -17,9 +17,10 @@
 #include "Path.h"
 #include "Game.h"
 #include "Events/SceneEvents.h"
+#include "CLog.h"
 
-StackGame::StackGame()
-	: Game()
+StackGame::StackGame(int argc, char** argv)
+	: Game(argc, argv)
 {
 }
 
@@ -33,6 +34,14 @@ void StackGame::OnStart()
 
 void StackGame::OnUpdate(float DeltaTime)
 {
+	bool yes = true;
+	ImGui::ShowDemoWindow(&yes);
+
+	if (GetEngine().GetInput().IsKeyDown(KeyCode::A) || GetEngine().GetInput().GetMousePosition().x > 0)
+	{
+		int i = 0;
+		++i;
+	}
 }
 
 void StackGame::OnEnd()

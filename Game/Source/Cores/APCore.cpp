@@ -49,7 +49,7 @@ void APCore::OnStart()
 
 	{
 		SceneGraph* graph = GetEngine().SceneNodes;
-		Transform* uiEnt = graph->RootTransform->GetComponent<Transform>().GetChildByName("UI");
+		Transform* uiEnt = graph->RootTransformEntity->GetComponent<Transform>().GetChildByName("UI");
 		if (!uiEnt)
 		{
 			return;
@@ -64,7 +64,7 @@ void APCore::OnStart()
 	StackBlock& prevBlock = m_currentBlock->AddComponent<StackBlock>();
 	prevBlock.BlockMoveSpeed = 0.f;
 	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
-
+	//m_currentBlock->AddComponent<Mesh>(MeshType::Cube);
 	GenerateNextHue();
 
 	Camera::CurrentCamera->ClearColor = Darken(GetHue(testPercent / 100.f), 0.20f);
@@ -158,11 +158,11 @@ void APCore::Update(float dt)
 	{
 		camTransform.SetPosition(Mathf::Lerp(camTransform.GetPosition(), Vector3(camTransform.GetPosition().x, m_currentPosition.y + m_cameraHeightOffset, camTransform.GetPosition().z), m_fracJourney));
 	}
-	auto Keyboard = GetEngine().GetInput().GetKeyboardState();
-	auto Controller = GetEngine().GetInput().GetControllerState();
-	if (!m_isKeyPressed && (Keyboard.P || Controller.buttons.y))
+
+	auto input = GetEngine().GetInput();
+	if (!m_isKeyPressed && (input.IsKeyDown(KeyCode::P)/* || Controller.buttons.y)*/))
 	{
-		auto entities = GetEntities();
+		auto& entities = GetEntities();
 		for (Entity& entity : entities)
 		{
 			if (entity.HasComponent<Rigidbody>())
@@ -172,7 +172,7 @@ void APCore::Update(float dt)
 		}
 		m_isKeyPressed = false;
 	}
-	if (!m_isKeyPressed && (Keyboard.Space || Controller.buttons.a) /*|| testColors <= 40*/)
+	if (!m_isKeyPressed && (input.IsKeyDown(KeyCode::Space) /*|| Controller.buttons.a*/) /*|| testColors <= 40*/)
 	{
 		switch (m_state)
 		{
@@ -208,7 +208,7 @@ void APCore::Update(float dt)
 		}
 		m_isKeyPressed = false;
 	}
-	m_isKeyPressed = (Keyboard.Space || Controller.buttons.a);
+	m_isKeyPressed = (input.IsKeyDown(KeyCode::Space)/* || Controller.buttons.a*/);
 }
 
 void APCore::SpawnNextBlock()
@@ -267,16 +267,14 @@ void APCore::SpawnNextBlock()
 
 void APCore::SetupCamera()
 {
-	Transform* cameraEnt = GetEngine().SceneNodes->RootTransform->GetComponent<Transform>().GetChildByName("Main Camera");
+	Transform* cameraEnt = GetEngine().SceneNodes->RootTransformEntity->GetComponent<Transform>().GetChildByName("Main Camera");
 	m_mainCamera = cameraEnt->Parent;
 
-	cameraEnt->SetPosition(Vector3(-5.f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, 5.f));
-	cameraEnt->SetRotation(Vector3(0.f, 45.f, 0.f));
+	cameraEnt->SetPosition(Vector3(-2.5f, m_currentBlock->GetComponent<Transform>().GetPosition().y + 5, -2.5f));
+	cameraEnt->SetRotation(Vector3(35.f, 45.f, 0.f));
 	Camera& cam = m_mainCamera->GetComponent<Camera>();
 	cam.Projection = Moonlight::ProjectionType::Orthographic;
-	cameraEnt->LookAt((Vector3(0.f, 0.f, 0.f) - cameraEnt->GetPosition()).Normalized());
-
-	cameraEnt->SetPosition(cameraEnt->GetPosition() + Vector3(0.f, 10.f, 0.f));
+	cam.OrthographicSize = 75.f;
 }
 
 bool APCore::EndBlock()
@@ -477,7 +475,6 @@ unsigned int APCore::UpdateScore()
 	{
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
-
 		view.UpdateScore(Score);
 	}
 	return Score;
@@ -490,8 +487,8 @@ void APCore::LoseGame()
 	{
 		// #TODO This could be any other BasicUIView
 		GameUIView& view = m_uiScore->GetComponent<GameUIView>();
-
 		view.SetMessage("uh oh");
+        
 		m_currentBlock->AddComponent<Rigidbody>();
 		//OnStop();
 	}
@@ -581,16 +578,6 @@ void APCore::ClearBlocks()
 	GetWorld().Simulate();
 }
 
-
-#if ME_EDITOR
-
-void APCore::OnEditorInspect()
-{
-	Base::OnEditorInspect();
-	ImGui::DragFloat("Camera Height Offset", &m_cameraHeightOffset);
-	ImGui::DragFloat2("Grid Size", &m_gridSnapSize[0]);
-}
-
 void APCore::AddStreakFX(Vector3 pos, int streakNum)
 {
 	auto plane = GetWorld().CreateEntity();
@@ -615,6 +602,16 @@ void APCore::AddStreakFX(Vector3 pos, int streakNum)
 
 	mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Diffuse, tex);
 	mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Opacity, tex);
+}
+
+
+#if ME_EDITOR
+
+void APCore::OnEditorInspect()
+{
+	Base::OnEditorInspect();
+	ImGui::DragFloat("Camera Height Offset", &m_cameraHeightOffset);
+	ImGui::DragFloat2("Grid Size", &m_gridSnapSize[0]);
 }
 
 #endif
