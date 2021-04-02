@@ -9,6 +9,7 @@
 *.sln
 **/*.vcxproj
 **/*.vcxproj.*
+**/*.pbxproj
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -209,3 +210,7 @@ engine.txt
 imgui.ini
 
 !ThirdParty/Lib/**/*.*
+.DS_Store
+**/*.xc*
+*.bin.d
+*.dds
