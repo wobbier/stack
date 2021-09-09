@@ -1,0 +1,117 @@
+name: Windows
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2019]
+        buildconfig: [Release, Release Editor]
+        include:
+          - os: windows-2019
+            shell: cmd
+            compiler: cl
+            target: Windows
+
+    steps:
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Check out repo
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: change dirs
+        run: |
+          ls
+          
+      - name: Generate a new project
+        shell: cmd
+        run: |
+          cd Engine/ThirdParty
+          call GenerateSolutions.bat
+          cd ../../
+
+      - name: Generate a new project
+        shell: cmd
+        run: call GenerateSolution.bat
+
+      - name: Compile Tools
+        if: ${{ matrix.buildconfig == 'Release' }}
+        shell: cmd
+        run: msbuild /property:Configuration="Release Editor"
+
+      - name: Compile Project
+        shell: cmd
+        run: msbuild /property:Configuration="${{matrix.buildconfig}}"
+
+      - name: Copy Assets
+        shell: cmd
+        run: call CopyAssets.bat
+
+      - name: Copy Editor Assets
+        shell: cmd
+        continue-on-error: true
+        run: |
+          robocopy "Build/Release/Assets" "Build\\Release Editor\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy "Engine/Tools" "Build\\Release Editor\\Engine\\Tools" *.* /w:0 /r:1 /v /E
+
+      - name: Archive Editor
+        if: ${{ matrix.buildconfig == 'Release Editor' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: EmptyProject - Editor
+          path: |
+            Build/${{matrix.buildconfig}}
+            !Build/${{matrix.buildconfig}}/AppX
+            !Build/${{matrix.buildconfig}}/Tools/**/*.*
+            !Build/${{matrix.buildconfig}}/*.lib
+            !Build/${{matrix.buildconfig}}/*.pdb
+            !Build/${{matrix.buildconfig}}/*.exp
+            !Build/${{matrix.buildconfig}}/*.log
+            Build/${{matrix.buildconfig}}/Tools/Optick.exe
+            Build/${{matrix.buildconfig}}/Tools/Win64/*.*
+
+      - name: Cook Assets
+        if: ${{ matrix.buildconfig == 'Release' }}
+        shell: cmd
+        run: |
+          cd "Build/Release Editor/"
+          call Havana.exe -CompileAssets
+          cd ../../
+
+      - name: Copy Cooked Assets
+        if: ${{ matrix.buildconfig == 'Release' }}
+        shell: cmd
+        continue-on-error: true
+        run: |
+          robocopy "Build/Release Editor/Assets" "Build\\Release\\Assets" *.* /w:0 /r:1 /v /E
+
+      - name: Archive Build
+        if: ${{ matrix.buildconfig == 'Release' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: EmptyProject - ${{matrix.buildconfig}}
+          path: |
+            Build/${{matrix.buildconfig}}
+            Build/${{matrix.buildconfig}}/Assets
+            !Build/${{matrix.buildconfig}}/AppX
+            !Build/${{matrix.buildconfig}}/*.lib
+            !Build/${{matrix.buildconfig}}/*.pdb
+            !Build/${{matrix.buildconfig}}/*.exp
+            !Build/${{matrix.buildconfig}}/*.log
+            !Build/${{matrix.buildconfig}}/**/*.png
+            !Build/${{matrix.buildconfig}}/**/*.jpg
+            !Build/${{matrix.buildconfig}}/**/*.frag
+            !Build/${{matrix.buildconfig}}/**/*.vert
+            !Build/${{matrix.buildconfig}}/**/*.var
+            !Build/${{matrix.buildconfig}}/**/*.sh
