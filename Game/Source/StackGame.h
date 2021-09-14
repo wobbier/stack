@@ -18,4 +18,6 @@ public:
 	virtual void OnEnd() override;
 
 	virtual void PostRender() override;
+
+	bool showDebugStuff = false;
 };

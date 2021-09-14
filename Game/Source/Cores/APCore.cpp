@@ -63,7 +63,7 @@ void APCore::OnStart()
 	prevTransform.Translate(Vector3(0.f, -6.f, 0.f));
 	StackBlock& prevBlock = m_currentBlock->AddComponent<StackBlock>();
 	prevBlock.BlockMoveSpeed = 0.f;
-	m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
+	m_currentBlock->AddComponent<Model>("Assets/Models/Cube.fbx");
 	//m_currentBlock->AddComponent<Mesh>(MeshType::Cube);
 	GenerateNextHue();
 
@@ -74,8 +74,8 @@ void APCore::OnStart()
 	{
 		Mesh& mesh = m_currentBlock->GetComponent<Mesh>();
 		mesh.MeshMaterial->DiffuseColor = GetHue(blockPercent / 100.f);
-		mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Diffuse, ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/CubeDiffuse.jpg")));
-		mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Opacity, ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/BaseCubeDiffuse.jpg")));
+		mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Diffuse, ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/Models/CubeDiffuse.jpg")));
+		mesh.MeshMaterial->SetTexture(Moonlight::TextureType::Opacity, ResourceCache::GetInstance().Get<Moonlight::Texture>(Path("Assets/Models/BaseCubeDiffuse.jpg")));
 	}
 
 	SpawnNextBlock();
@@ -225,7 +225,7 @@ void APCore::SpawnNextBlock()
 	m_currentBlock = GetWorld().CreateEntity();
 	Transform& transform = m_currentBlock->AddComponent<Transform>(std::string("StackBlock " + std::to_string(GetEntities().size())));
 	StackBlock& block = m_currentBlock->AddComponent<StackBlock>();
-	Model& model = m_currentBlock->AddComponent<Model>("Assets/Cube.fbx");
+	Model& model = m_currentBlock->AddComponent<Model>("Assets/Models/Cube.fbx");
 
 	m_currentStackSize.y = .3f;
 	transform.SetScale(m_currentStackSize);
@@ -410,7 +410,7 @@ void APCore::CreateBrokenPiece(float amountLost, Vector3 position, bool blockMov
 	transform.SetScale(stack);
 	transform.SetRotation(Vector3());
 
-	broken->AddComponent<Model>("Assets/Cube.fbx");
+	broken->AddComponent<Model>("Assets/Models/Cube.fbx");
 	broken->AddComponent<SelfDestruct>(5.f);
 	Rigidbody& rigidbody = broken->AddComponent<Rigidbody>(Rigidbody::ColliderType::Box);
 	rigidbody.SetScale(stack);

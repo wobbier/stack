@@ -34,8 +34,10 @@ void StackGame::OnStart()
 
 void StackGame::OnUpdate(float DeltaTime)
 {
-	bool yes = true;
-	ImGui::ShowDemoWindow(&yes);
+	if (showDebugStuff)
+	{
+		ImGui::ShowDemoWindow(&showDebugStuff);
+	}
 
 	if (GetEngine().GetInput().IsKeyDown(KeyCode::A) || GetEngine().GetInput().GetMousePosition().x > 0)
 	{
