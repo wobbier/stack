@@ -100,7 +100,7 @@ jobs:
         if: ${{ matrix.buildconfig == 'Release' }}
         uses: actions/upload-artifact@v2
         with:
-          name: EmptyProject - ${{matrix.buildconfig}}
+          name: Heap - ${{matrix.buildconfig}}
           path: |
             Build/${{matrix.buildconfig}}
             Build/${{matrix.buildconfig}}/Assets
