@@ -85,7 +85,6 @@ void APCore::OnStart()
 
 void APCore::OnStop()
 {
-	ClearBlocks();
 }
 
 void APCore::Update(float dt)
