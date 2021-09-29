@@ -52,12 +52,7 @@ void StackGame::OnEnd()
 
 void StackGame::OnInitialize()
 {
-	NewSceneEvent evt;
-	evt.Fire();
-	GetEngine().GetWorld().lock()->Start();
 	GetEngine().LoadScene("Assets/Test.lvl");
-	GetEngine().GetWorld().lock()->Simulate();
-	GetEngine().GetWorld().lock()->Start();
 }
 
 void StackGame::PostRender()
