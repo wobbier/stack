@@ -10,7 +10,7 @@
 #include "Math/Random.h"
 #include "Events/SceneEvents.h"
 #include "Components/StackBlock.h"
-#include "Cores/SceneGraph.h"
+#include "Cores/SceneCore.h"
 #include "Components/Graphics/Model.h"
 #include "Engine/Engine.h"
 #include "Components/Camera.h"
@@ -48,7 +48,7 @@ void APCore::OnStart()
 	testColors = 0;
 
 	{
-		SceneGraph* graph = GetEngine().SceneNodes;
+		SceneCore* graph = GetEngine().SceneNodes;
 		Transform* uiEnt = graph->RootTransformEntity->GetComponent<Transform>().GetChildByName("UI");
 		if (!uiEnt)
 		{
