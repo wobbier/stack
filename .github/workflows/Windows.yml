@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2019]
-        buildconfig: [Release, Release Editor]
+        buildconfig: [Release Editor]
         include:
           - os: windows-2019
             shell: cmd
@@ -43,10 +43,10 @@ jobs:
 
       - name: Generate a new project
         shell: cmd
-        run: call GenerateSolution.bat
+        run: cd Project && call GenerateSolution.bat && cd ../
 
       - name: Compile Tools
-        if: ${{ matrix.buildconfig == 'Release' }}
+        if: ${{ matrix.buildconfig == 'Release Game' }}
         shell: cmd
         run: msbuild /property:Configuration="Release Editor"
 
@@ -62,8 +62,8 @@ jobs:
         shell: cmd
         continue-on-error: true
         run: |
-          robocopy "Build/Release/Assets" "Build\\Release Editor\\Assets" *.* /w:0 /r:1 /v /E
-          robocopy "Engine/Tools" "Build\\Release Editor\\Engine\\Tools" *.* /w:0 /r:1 /v /E
+          robocopy ".build/Release/Assets" ".build\\Release Editor\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy "Engine/Tools" ".build\\Release Editor\\Engine\\Tools" *.* /w:0 /r:1 /v /E
 
       - name: Archive Editor
         if: ${{ matrix.buildconfig == 'Release Editor' }}
@@ -71,21 +71,21 @@ jobs:
         with:
           name: EmptyProject - Editor
           path: |
-            Build/${{matrix.buildconfig}}
-            !Build/${{matrix.buildconfig}}/AppX
-            !Build/${{matrix.buildconfig}}/Tools/**/*.*
-            !Build/${{matrix.buildconfig}}/*.lib
-            !Build/${{matrix.buildconfig}}/*.pdb
-            !Build/${{matrix.buildconfig}}/*.exp
-            !Build/${{matrix.buildconfig}}/*.log
-            Build/${{matrix.buildconfig}}/Tools/Optick.exe
-            Build/${{matrix.buildconfig}}/Tools/Win64/*.*
+            .build/${{matrix.buildconfig}}
+            !.build/${{matrix.buildconfig}}/AppX
+            !.build/${{matrix.buildconfig}}/Tools/**/*.*
+            !.build/${{matrix.buildconfig}}/*.lib
+            !.build/${{matrix.buildconfig}}/*.pdb
+            !.build/${{matrix.buildconfig}}/*.exp
+            !.build/${{matrix.buildconfig}}/*.log
+            .build/${{matrix.buildconfig}}/Tools/Optick.exe
+            .build/${{matrix.buildconfig}}/Tools/Win64/*.*
 
       - name: Cook Assets
         if: ${{ matrix.buildconfig == 'Release' }}
         shell: cmd
         run: |
-          cd "Build/Release Editor/"
+          cd ".build/Release Editor/"
           call Havana.exe -CompileAssets
           cd ../../
 
@@ -94,13 +94,13 @@ jobs:
         shell: cmd
         continue-on-error: true
         run: |
-          robocopy "Build/Release Editor/Assets" "Build\\Release\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy ".build/Release Editor/Assets" ".build\\Release\\Assets" *.* /w:0 /r:1 /v /E
 
       - name: Archive Build
         if: ${{ matrix.buildconfig == 'Release' }}
         uses: actions/upload-artifact@v2
         with:
-          name: Heap - ${{matrix.buildconfig}}
+          name: Heap v${{github.run_number}} - ${{matrix.buildconfig}}
           path: |
             Build/${{matrix.buildconfig}}
             Build/${{matrix.buildconfig}}/Assets
