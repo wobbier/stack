@@ -1,1 +1,0 @@
-%~dp0Engine\Tools\premake5.exe --file=premake.lua vs2019 --project-name=Stack --project-type=Win64
