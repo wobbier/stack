@@ -59,24 +59,27 @@ jobs:
         run: call CopyAssets.bat
 
       - name: Copy Editor Assets
+        if: ${{ matrix.buildconfig == 'Release Editor' }}
         shell: cmd
         continue-on-error: true
         run: |
           robocopy ".build/Release/Assets" ".build\\Release Editor\\Assets" *.* /w:0 /r:1 /v /E
-          robocopy "Engine/Tools" ".build\\Release Editor\\Engine\\Tools" *.* /w:0 /r:1 /v /E
+          robocopy "Engine/Tools" ".build\\Release Editor\\Tools" Optick.exe /w:0 /r:1 /v /E
+          robocopy "Engine/Tools/Win64" ".build\\Release Editor\\Tools\\Win64" *.* /w:0 /r:1 /v /E
 
       - name: Archive Editor
         if: ${{ matrix.buildconfig == 'Release Editor' }}
         uses: actions/upload-artifact@v2
         with:
-          name: EmptyProject - Editor
+          name: Heap v${{github.run_number}} - Editor
           path: |
             .build/${{matrix.buildconfig}}
             !.build/${{matrix.buildconfig}}/AppX
-            !.build/${{matrix.buildconfig}}/Tools/**/*.*
+            !.build/${{matrix.buildconfig}}/Tools
             !.build/${{matrix.buildconfig}}/*.lib
             !.build/${{matrix.buildconfig}}/*.pdb
             !.build/${{matrix.buildconfig}}/*.exp
+            !.build/${{matrix.buildconfig}}/*.map
             !.build/${{matrix.buildconfig}}/*.log
             .build/${{matrix.buildconfig}}/Tools/Optick.exe
             .build/${{matrix.buildconfig}}/Tools/Win64/*.*
