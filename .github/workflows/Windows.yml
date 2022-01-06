@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2019]
-        buildconfig: [Release Editor]
+        buildconfig: [Release Editor, Release Game]
         include:
           - os: windows-2019
             shell: cmd
@@ -85,7 +85,7 @@ jobs:
             .build/${{matrix.buildconfig}}/Tools/Win64/*.*
 
       - name: Cook Assets
-        if: ${{ matrix.buildconfig == 'Release' }}
+        if: ${{ matrix.buildconfig == 'Release Game' }}
         shell: cmd
         run: |
           cd ".build/Release Editor/"
@@ -93,28 +93,28 @@ jobs:
           cd ../../
 
       - name: Copy Cooked Assets
-        if: ${{ matrix.buildconfig == 'Release' }}
+        if: ${{ matrix.buildconfig == 'Release Game' }}
         shell: cmd
         continue-on-error: true
         run: |
-          robocopy ".build/Release Editor/Assets" ".build\\Release\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy ".build/Release Editor/Assets" ".build\\Release Game\\Assets" *.* /w:0 /r:1 /v /E
 
       - name: Archive Build
-        if: ${{ matrix.buildconfig == 'Release' }}
+        if: ${{ matrix.buildconfig == 'Release Game' }}
         uses: actions/upload-artifact@v2
         with:
           name: Heap v${{github.run_number}} - ${{matrix.buildconfig}}
           path: |
-            Build/${{matrix.buildconfig}}
-            Build/${{matrix.buildconfig}}/Assets
-            !Build/${{matrix.buildconfig}}/AppX
-            !Build/${{matrix.buildconfig}}/*.lib
-            !Build/${{matrix.buildconfig}}/*.pdb
-            !Build/${{matrix.buildconfig}}/*.exp
-            !Build/${{matrix.buildconfig}}/*.log
-            !Build/${{matrix.buildconfig}}/**/*.png
-            !Build/${{matrix.buildconfig}}/**/*.jpg
-            !Build/${{matrix.buildconfig}}/**/*.frag
-            !Build/${{matrix.buildconfig}}/**/*.vert
-            !Build/${{matrix.buildconfig}}/**/*.var
-            !Build/${{matrix.buildconfig}}/**/*.sh
+            .build/${{matrix.buildconfig}}
+            .build/${{matrix.buildconfig}}/Assets
+            !.build/${{matrix.buildconfig}}/AppX
+            !.build/${{matrix.buildconfig}}/*.lib
+            !.build/${{matrix.buildconfig}}/*.pdb
+            !.build/${{matrix.buildconfig}}/*.exp
+            !.build/${{matrix.buildconfig}}/*.log
+            !.build/${{matrix.buildconfig}}/**/*.png
+            !.build/${{matrix.buildconfig}}/**/*.jpg
+            !.build/${{matrix.buildconfig}}/**/*.frag
+            !.build/${{matrix.buildconfig}}/**/*.vert
+            !.build/${{matrix.buildconfig}}/**/*.var
+            !.build/${{matrix.buildconfig}}/**/*.sh
