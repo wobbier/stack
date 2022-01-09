@@ -279,11 +279,11 @@ void APCore::SetupCamera()
 bool APCore::EndBlock()
 {
 	Transform& prevTransform = m_previousBlock->GetComponent<Transform>();
-	Vector3& prevPos = prevTransform.GetPosition();
+	Vector3 prevPos = prevTransform.GetPosition();
 
 	Transform& transform = m_currentBlock->GetComponent<Transform>();
 	StackBlock& block = m_currentBlock->GetComponent<StackBlock>();
-	Vector3& pos = transform.GetPosition();
+	Vector3 pos = transform.GetPosition();
 
 	if (block.MoveOnX)
 	{
