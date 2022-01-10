@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2019]
-        buildconfig: [Release Editor, Release Game]
+        buildconfig: [Editor_Release, Game_Release]
         include:
           - os: windows-2019
             shell: cmd
@@ -46,9 +46,9 @@ jobs:
         run: cd Project && call GenerateSolution.bat && cd ../
 
       - name: Compile Tools
-        if: ${{ matrix.buildconfig == 'Release Game' }}
+        if: ${{ matrix.buildconfig == 'Game_Release' }}
         shell: cmd
-        run: msbuild /property:Configuration="Release Editor"
+        run: msbuild /property:Configuration="Editor_Release"
 
       - name: Compile Project
         shell: cmd
@@ -59,16 +59,16 @@ jobs:
         run: call CopyAssets.bat
 
       - name: Copy Editor Assets
-        if: ${{ matrix.buildconfig == 'Release Editor' }}
+        if: ${{ matrix.buildconfig == 'Editor_Release' }}
         shell: cmd
         continue-on-error: true
         run: |
-          robocopy ".build/Release/Assets" ".build\\Release Editor\\Assets" *.* /w:0 /r:1 /v /E
-          robocopy "Engine/Tools" ".build\\Release Editor\\Tools" Optick.exe /w:0 /r:1 /v /E
-          robocopy "Engine/Tools/Win64" ".build\\Release Editor\\Tools\\Win64" *.* /w:0 /r:1 /v /E
+          robocopy ".build/Release/Assets" ".build\\Editor_Release\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy "Engine/Tools" ".build\\Editor_Release\\Tools" Optick.exe /w:0 /r:1 /v /E
+          robocopy "Engine/Tools/Win64" ".build\\Editor_Release\\Tools\\Win64" *.* /w:0 /r:1 /v /E
 
       - name: Archive Editor
-        if: ${{ matrix.buildconfig == 'Release Editor' }}
+        if: ${{ matrix.buildconfig == 'Editor_Release' }}
         uses: actions/upload-artifact@v2
         with:
           name: Heap v${{github.run_number}} - Editor
@@ -85,22 +85,22 @@ jobs:
             .build/${{matrix.buildconfig}}/Tools/Win64/*.*
 
       - name: Cook Assets
-        if: ${{ matrix.buildconfig == 'Release Game' }}
+        if: ${{ matrix.buildconfig == 'Game_Release' }}
         shell: cmd
         run: |
-          cd ".build/Release Editor/"
+          cd ".build/Editor_Release/"
           call Havana.exe -CompileAssets
           cd ../../
 
       - name: Copy Cooked Assets
-        if: ${{ matrix.buildconfig == 'Release Game' }}
+        if: ${{ matrix.buildconfig == 'Game_Release' }}
         shell: cmd
         continue-on-error: true
         run: |
-          robocopy ".build/Release Editor/Assets" ".build\\Release Game\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy ".build/Editor_Release/Assets" ".build\\Game_Release\\Assets" *.* /w:0 /r:1 /v /E
 
       - name: Archive Build
-        if: ${{ matrix.buildconfig == 'Release Game' }}
+        if: ${{ matrix.buildconfig == 'Game_Release' }}
         uses: actions/upload-artifact@v2
         with:
           name: Heap v${{github.run_number}} - ${{matrix.buildconfig}}
