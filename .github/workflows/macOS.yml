@@ -10,17 +10,15 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
-        #compiler: [ g++-10 ]
-        include:
-          - os: macos-latest
-            compiler: clang
-            target: Windows
-
+        platform:
+          - macOS
+        xcode:
+          - ^12
+    runs-on: macos-latest
     steps:
+    
       - name: Check out repo
         uses: actions/checkout@v2
         with:
@@ -36,16 +34,18 @@ jobs:
       - name: Generate a new project
         shell: bash
         run: cd Project && sh GenerateSolution.command && cd ../
-
-      - name: Xcodebuild Action
-        uses: sersoft-gmbh/xcodebuild-action@v1.8.0
+          
+      - name: Build
+        uses: mxcl/xcodebuild@v1
         with:
-          workspace: Stack.xcworkspace
+          xcode: ${{ matrix.xcode }}
+          platform: ${{ matrix.platform }}
+          action: build # default = `test`
+          code-coverage: true # default = `false`
+          warnings-as-errors: false # default = `false`
+          configuration: Debug Editor # no default, ie. `xcodebuild` decides itself
           scheme: Havana_mac
-          destination: platform=macOS
-          action: build
-          configuration: "Debug Editor"
-
+          
       - name: Copy Assets (Not Implemented)
         shell: bash
         run: echo todo
