@@ -1,0 +1,61 @@
+name: macOS
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        buildconfig: [Debug Editor]
+        #compiler: [ g++-10 ]
+        include:
+          - os: macos-latest
+            compiler: clang
+            target: Windows
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          
+      - name: Generate ThirdParty Libraries
+        shell: bash
+        run: |
+          cd Engine/ThirdParty
+          sh GenerateSolutions.command
+          cd ../../
+
+      - name: Generate a new project
+        shell: bash
+        run: cd Project && sh GenerateSolution.command && cd ../
+
+      - name: Xcodebuild Action
+        uses: sersoft-gmbh/xcodebuild-action@v1.4
+        with:
+          workspace: Stack.xcworkspace
+          destination: platform=macOS
+          action: build
+          configuration: ${{matrix.buildconfig}}
+          scheme: Havana_mac
+
+      - name: Copy Assets (Not Implemented)
+        shell: bash
+        run: echo todo
+
+      - name: Archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: EmptyProject - ${{matrix.buildconfig}}
+          path: |
+            Build/${{matrix.buildconfig}}
+            !Build/${{matrix.buildconfig}}/**/*.fbx
+            !Build/${{matrix.buildconfig}}/AppX
