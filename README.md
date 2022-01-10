@@ -1,9 +1,11 @@
-[![Build status](https://github.com/wobbier/stack/actions/workflows/Windows.yml/badge.svg)](https://github.com/wobbier/stack/actions/workflows/Windows.yml)
-![license](https://img.shields.io/github/license/wobbier/mitchgame.svg)
-======
+Stack
+-----------------------
 This is an implementation of the game stack using the [MitchEngine][1].
 
-![Alt](https://repobeats.axiom.co/api/embed/78a99fa3d271f96d4a342c524712d18d63ec2e4f.svg "Repobeats analytics image")
+|Platform|Game|
+|---|---|
+|Win64|[![Build status Win64](https://github.com/wobbier/stack/actions/workflows/Windows.yml/badge.svg)](https://github.com/wobbier/stack/actions/workflows/Windows.yml)|
+|macOS|[![Build Status](https://github.com/wobbier/stack/actions/workflows/macOS.yml/badge.svg)](https://github.com/wobbier/stack/actions/workflows/macOS.yml)|
 
 Getting Started
 -----------------------
@@ -15,5 +17,6 @@ Getting Started
 
 ![Progress Pic](https://raw.githubusercontent.com/wobbier/stack/master/.github/Stack.png)
 
+![Alt](https://repobeats.axiom.co/api/embed/78a99fa3d271f96d4a342c524712d18d63ec2e4f.svg "Repobeats analytics image")
 
 [1]: https://github.com/wobbier/MitchEngine "MitchEngine Source"

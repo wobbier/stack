@@ -16,6 +16,12 @@ jobs:
           - macOS
         xcode:
           - ^12
+        configuration:
+          - Debug
+          - Release
+        type:
+          - Editor
+          - Game
     runs-on: macos-latest
     steps:
     
@@ -35,7 +41,8 @@ jobs:
         shell: bash
         run: cd Project && sh GenerateSolution.command && cd ../
           
-      - name: Build
+      - name: Build Editor
+        if: ${{ matrix.type == 'Editor' }}
         uses: mxcl/xcodebuild@v1
         with:
           xcode: ${{ matrix.xcode }}
@@ -43,9 +50,21 @@ jobs:
           action: build # default = `test`
           code-coverage: true # default = `false`
           warnings-as-errors: false # default = `false`
-          configuration: Debug_Editor # no default, ie. `xcodebuild` decides itself
+          configuration: ${{ matrix.type }}_${{ matrix.configuration }} # no default, ie. `xcodebuild` decides itself
           scheme: Havana_mac
           
+      - name: Build Game
+        if: ${{ matrix.type == 'Game' }}
+        uses: mxcl/xcodebuild@v1
+        with:
+          xcode: ${{ matrix.xcode }}
+          platform: ${{ matrix.platform }}
+          action: build # default = `test`
+          code-coverage: true # default = `false`
+          warnings-as-errors: false # default = `false`
+          configuration: ${{ matrix.type }}_${{ matrix.configuration }} # no default, ie. `xcodebuild` decides itself
+          scheme: EntryPointGameProject_mac
+
       - name: Copy Assets (Not Implemented)
         shell: bash
         run: echo todo
