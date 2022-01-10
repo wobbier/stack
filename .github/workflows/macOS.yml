@@ -43,7 +43,7 @@ jobs:
           action: build # default = `test`
           code-coverage: true # default = `false`
           warnings-as-errors: false # default = `false`
-          configuration: Debug Editor # no default, ie. `xcodebuild` decides itself
+          configuration: Debug_Editor # no default, ie. `xcodebuild` decides itself
           scheme: Havana_mac
           
       - name: Copy Assets (Not Implemented)
