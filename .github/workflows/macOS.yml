@@ -14,7 +14,6 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        buildconfig: [Debug Editor]
         #compiler: [ g++-10 ]
         include:
           - os: macos-latest
@@ -39,13 +38,13 @@ jobs:
         run: cd Project && sh GenerateSolution.command && cd ../
 
       - name: Xcodebuild Action
-        uses: sersoft-gmbh/xcodebuild-action@v1.4
+        uses: sersoft-gmbh/xcodebuild-action@v1.8.0
         with:
           workspace: Stack.xcworkspace
+          scheme: Havana_mac
           destination: platform=macOS
           action: build
-          configuration: ${{matrix.buildconfig}}
-          scheme: Havana_mac
+          configuration: "Debug Editor"
 
       - name: Copy Assets (Not Implemented)
         shell: bash

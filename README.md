@@ -3,6 +3,8 @@
 ======
 This is an implementation of the game stack using the [MitchEngine][1].
 
+![Alt](https://repobeats.axiom.co/api/embed/78a99fa3d271f96d4a342c524712d18d63ec2e4f.svg "Repobeats analytics image")
+
 Getting Started
 -----------------------
 
@@ -12,5 +14,6 @@ Getting Started
 4. Build & Celebrate
 
 ![Progress Pic](https://raw.githubusercontent.com/wobbier/stack/master/.github/Stack.png)
+
 
 [1]: https://github.com/wobbier/MitchEngine "MitchEngine Source"
