@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2019]
-        buildconfig: [Editor_Release, Game_Win64_Release, Game_UWP_Debug]
+        buildconfig: [Editor_Release, Game_Win64_Release]
         include:
           - os: windows-2019
             shell: cmd
@@ -46,7 +46,7 @@ jobs:
         run: cd Project && call GenerateSolution.bat && cd ../
 
       - name: Compile Tools
-        if: ${{ matrix.buildconfig == 'Game_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
         shell: cmd
         run: msbuild /property:Configuration="Editor_Release"
 
@@ -85,7 +85,7 @@ jobs:
             .build/${{matrix.buildconfig}}/Tools/Win64/*.*
 
       - name: Cook Assets
-        if: ${{ matrix.buildconfig == 'Game_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
         shell: cmd
         run: |
           cd ".build/Editor_Release/"
@@ -93,14 +93,14 @@ jobs:
           cd ../../
 
       - name: Copy Cooked Assets
-        if: ${{ matrix.buildconfig == 'Game_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
         shell: cmd
         continue-on-error: true
         run: |
-          robocopy ".build/Editor_Release/Assets" ".build\\Game_Release\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy ".build/Editor_Release/Assets" ".build\\Game_Win64_Release\\Assets" *.* /w:0 /r:1 /v /E
 
       - name: Archive Build
-        if: ${{ matrix.buildconfig == 'Game_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
         uses: actions/upload-artifact@v2
         with:
           name: Heap v${{github.run_number}} - ${{matrix.buildconfig}}
