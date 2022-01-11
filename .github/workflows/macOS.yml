@@ -21,7 +21,7 @@ jobs:
           - Release
         type:
           - Editor
-          - Game
+          - Game_macOS
     runs-on: macos-latest
     steps:
     
@@ -54,7 +54,7 @@ jobs:
           scheme: Havana_mac
           
       - name: Build Game
-        if: ${{ matrix.type == 'Game' }}
+        if: ${{ matrix.type == 'Game_macOS' }}
         uses: mxcl/xcodebuild@v1
         with:
           xcode: ${{ matrix.xcode }}
@@ -63,7 +63,7 @@ jobs:
           code-coverage: true # default = `false`
           warnings-as-errors: false # default = `false`
           configuration: ${{ matrix.type }}_${{ matrix.configuration }} # no default, ie. `xcodebuild` decides itself
-          scheme: EntryPointGameProject_mac
+          scheme: Game_EntryPoint_mac
 
       - name: Copy Assets (Not Implemented)
         shell: bash
@@ -72,8 +72,6 @@ jobs:
       - name: Archive
         uses: actions/upload-artifact@v2
         with:
-          name: EmptyProject - ${{matrix.buildconfig}}
+          name: Stack - ${{matrix.type}} - ${{matrix.buildconfig}}
           path: |
             Build/${{matrix.buildconfig}}
-            !Build/${{matrix.buildconfig}}/**/*.fbx
-            !Build/${{matrix.buildconfig}}/AppX
