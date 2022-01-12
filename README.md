@@ -5,6 +5,7 @@ This is an implementation of the game stack using the [MitchEngine][1].
 |Platform|Game|
 |---|---|
 |Win64|[![Build status Win64](https://github.com/wobbier/stack/actions/workflows/Windows.yml/badge.svg)](https://github.com/wobbier/stack/actions/workflows/Windows.yml)|
+|UWP / Xbox|[![Build status WUP](https://github.com/wobbier/stack/actions/workflows/UWP.yml/badge.svg)](https://github.com/wobbier/stack/actions/workflows/UWP.yml)|
 |macOS|[![Build Status](https://github.com/wobbier/stack/actions/workflows/macOS.yml/badge.svg)](https://github.com/wobbier/stack/actions/workflows/macOS.yml)|
 
 Getting Started
