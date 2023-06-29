@@ -49,42 +49,39 @@ jobs:
       - name: Generate a new project
         shell: cmd
         run: cd Project && call GenerateSolution.bat && cd ../
-
+        
       - name: Compile Tools
         if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
         shell: cmd
-        run: msbuild /property:Configuration="Editor_Release"
+        run: msbuild Stack.sln /property:Configuration="Editor_Release"
 
       - name: Compile Project
         shell: cmd
-        run: msbuild /property:Configuration="${{matrix.buildconfig}}"
+        run: msbuild Stack.sln /property:Configuration="${{matrix.buildconfig}}"
 
       - name: Copy Assets
         shell: cmd
         run: call CopyAssets.bat
 
       - name: Copy Editor Assets
-        if: ${{ matrix.buildconfig == 'Editor_Release' }}
         shell: cmd
         continue-on-error: true
         run: |
           robocopy ".build/Release/Assets" ".build\\Editor_Release\\Assets" *.* /w:0 /r:1 /v /E
-          robocopy "Engine/Tools" ".build\\Editor_Release\\Tools" Optick.exe /w:0 /r:1 /v /E
-          robocopy "Engine/Tools/Win64" ".build\\Editor_Release\\Tools\\Win64" *.* /w:0 /r:1 /v /E
+          robocopy "Engine/Tools" ".build\\Editor_Release\\Engine\\Tools" *.* /w:0 /r:1 /v /E
 
       - name: Archive Editor
         if: ${{ matrix.buildconfig == 'Editor_Release' }}
         uses: actions/upload-artifact@v2
         with:
-          name: Heap v${{github.run_number}} - Editor
+          name: Stack v${{github.run_number}} - Editor
           path: |
             .build/${{matrix.buildconfig}}
             !.build/${{matrix.buildconfig}}/AppX
-            !.build/${{matrix.buildconfig}}/Tools
+            !.build/${{matrix.buildconfig}}/Tools/**/*.*
             !.build/${{matrix.buildconfig}}/*.lib
             !.build/${{matrix.buildconfig}}/*.pdb
             !.build/${{matrix.buildconfig}}/*.exp
-            !.build/${{matrix.buildconfig}}/*.map
             !.build/${{matrix.buildconfig}}/*.log
             .build/${{matrix.buildconfig}}/Tools/Optick.exe
             .build/${{matrix.buildconfig}}/Tools/Win64/*.*
@@ -108,7 +105,7 @@ jobs:
         if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
         uses: actions/upload-artifact@v2
         with:
-          name: Heap v${{github.run_number}} - ${{matrix.buildconfig}}
+          name: Stack v${{github.run_number}} - ${{matrix.buildconfig}}
           path: |
             .build/${{matrix.buildconfig}}
             .build/${{matrix.buildconfig}}/Assets
@@ -123,3 +120,33 @@ jobs:
             !.build/${{matrix.buildconfig}}/**/*.vert
             !.build/${{matrix.buildconfig}}/**/*.var
             !.build/${{matrix.buildconfig}}/**/*.sh
+
+      - name: Copy Tools Assets
+        shell: cmd
+        continue-on-error: true
+        run: |
+          robocopy "Engine/Tools/HUB/Assets" ".build\\Editor_Release\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy "Engine/Tools/HUB" ".build\\Editor_Release" *.exe /w:0 /r:1 /v /E
+
+      - name: Archive Tools
+        if: ${{ matrix.buildconfig == 'Editor_Release' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: HUB v${{github.run_number}}
+          path: |
+            .build/${{matrix.buildconfig}}/HUB.exe
+            .build/${{matrix.buildconfig}}/Assets/Close.png
+            .build/${{matrix.buildconfig}}/Assets/Minimize.png
+            .build/${{matrix.buildconfig}}/Assets/VS.png
+            .build/${{matrix.buildconfig}}/Assets/LOGO.png
+            .build/${{matrix.buildconfig}}/shaderc.exe
+            .build/${{matrix.buildconfig}}/texturec.exe
+            .build/${{matrix.buildconfig}}/*.dll
+            !.build/${{matrix.buildconfig}}/AppX
+            !.build/${{matrix.buildconfig}}/Tools/**/*.*
+            !.build/${{matrix.buildconfig}}/*.lib
+            !.build/${{matrix.buildconfig}}/*.pdb
+            !.build/${{matrix.buildconfig}}/*.exp
+            !.build/${{matrix.buildconfig}}/*.log
+            .build/${{matrix.buildconfig}}/Tools/Optick.exe
+            .build/${{matrix.buildconfig}}/Tools/Win64/*.*
