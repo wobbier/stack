@@ -30,6 +30,11 @@ jobs:
         with:
           submodules: recursive
           
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "5.0.100"
+
       - name: Generate ThirdParty Libraries
         shell: bash
         run: |
