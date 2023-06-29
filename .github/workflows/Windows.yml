@@ -39,14 +39,14 @@ jobs:
         run: |
           ls
           
-      - name: Generate a new project
+      - name: Generate third party solutions
         shell: cmd
         run: |
           cd Engine/ThirdParty
           call GenerateSolutions.bat
           cd ../../
 
-      - name: Generate a new project
+      - name: Generate a Game project
         shell: cmd
         run: cd Project && call GenerateSolution.bat && cd ../
         
