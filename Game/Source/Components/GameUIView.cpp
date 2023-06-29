@@ -37,7 +37,7 @@ void GameUIView::SetMessage(const std::string& NewMessage)
 	ExecuteScript("document.getElementById('Score').innerHTML='" + NewMessage + "';");
 }
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 
 void GameUIView::OnEditorInspect()
 {

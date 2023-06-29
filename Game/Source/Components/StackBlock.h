@@ -21,7 +21,7 @@ public:
 
 	Vector3 Color;
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 	virtual void OnEditorInspect() final;
 #endif
 };

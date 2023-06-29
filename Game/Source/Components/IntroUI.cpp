@@ -1,7 +1,7 @@
 #include "IntroUI.h"
 #include "Ultralight/View.h"
 
-#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
+#if USING( ME_PLATFORM_WINDOWS )
 
 #include "UI/JSHelpers.h"
 #include "Events/SceneEvents.h"
@@ -27,7 +27,7 @@ void IntroUI::LoadGame(const ultralight::JSObject& thisObject, const ultralight:
 	evt.Fire();
 }
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 
 void IntroUI::OnEditorInspect()
 {

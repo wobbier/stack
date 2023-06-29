@@ -29,13 +29,13 @@ public:
 
 	virtual void Init() final;
 	virtual void OnStart() override;
-	virtual void OnEntityAdded(Entity& NewEntity) final;
-	virtual void OnEntityRemoved(Entity& InEntity) final;
+	virtual void OnEntityAdded( Entity& NewEntity ) final;
+	virtual void OnEntityRemoved( Entity& InEntity ) final;
 	virtual void OnStop() override;
 
-	virtual void Update(float dt) final;
+	virtual void Update( const UpdateContext& dt ) final;
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 	virtual void OnEditorInspect() final;
 #endif
 
@@ -47,18 +47,18 @@ private:
 	float blockPercent = 0.f;
 
 	void GenerateNextHue();
-	Vector3 GetHue(float percent);
-	Vector3 Darken(const Vector3& OutColor, float percent);
+	Vector3 GetHue( float percent );
+	Vector3 Darken( const Vector3& OutColor, float percent );
 
 	void SpawnNextBlock();
-	void CreateBrokenPiece(float amountLost, Vector3 position, bool blockMovingOnX, bool PositiveDirection);
+	void CreateBrokenPiece( float amountLost, Vector3 position, bool blockMovingOnX, bool PositiveDirection );
 
-	void AddStreakFX(Vector3 pos, int streakNum);
+	void AddStreakFX( Vector3 pos, int streakNum );
 
 	void SetupCamera();
 	bool EndBlock();
 	unsigned int UpdateScore();
-	void Reset(Transform& transform);
+	void Reset( Transform& transform );
 
 	void LoseGame();
 	void ClearBlocks();
@@ -80,4 +80,4 @@ private:
 	float m_fracJourney = 0.f;
 	GameState m_state = GameState::Start;
 };
-ME_REGISTER_CORE(APCore)
+ME_REGISTER_CORE( APCore )

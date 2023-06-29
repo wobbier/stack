@@ -9,18 +9,18 @@ public:
 	TestCore();
 	~TestCore() {}
 
-	virtual void OnEntityAdded(Entity& NewEntity) override;
+	virtual void OnEntityAdded( Entity& NewEntity ) override;
 
-	virtual void OnEntityRemoved(Entity& InEntity) override;
+	virtual void OnEntityRemoved( Entity& InEntity ) override;
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 	virtual void OnEditorInspect() override;
 #endif
 
-	virtual void Update(float dt) override;
+	virtual void Update( const UpdateContext& inUpdateContext ) override;
 
 	virtual void Init() override;
 
 };
 
-ME_REGISTER_CORE(TestCore)
+ME_REGISTER_CORE( TestCore )

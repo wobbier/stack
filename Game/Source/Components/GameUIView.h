@@ -14,7 +14,7 @@ public:
 	void UpdateScore(unsigned int NewScore);
 	void SetMessage(const std::string& NewMessage);
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 	virtual void OnEditorInspect() override;
 #endif
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "Components/UI/BasicUIView.h"
 
-#if ME_PLATFORM_UWP || ME_PLATFORM_WIN64
+#if USING( ME_PLATFORM_WINDOWS )
 
 #include "UI/JSHelpers.h"
 
@@ -15,7 +15,7 @@ public:
 
 	virtual void OnUILoad(ultralight::JSObject& GlobalWindow, ultralight::View* Caller) final;
 
-#if ME_EDITOR
+#if USING( ME_EDITOR ) 
 	virtual void OnEditorInspect() override;
 #endif
 

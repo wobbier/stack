@@ -19,7 +19,7 @@ public:
 	virtual void OnDeserialize(const json& inJson) final
 	{
 	}
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 	virtual void OnEditorInspect() final
 	{
 	}
@@ -47,14 +47,14 @@ public:
 	{
 	}
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 	virtual void OnEditorInspect() override
 	{
 		Base::OnEditorInspect();
 	}
 #endif
 
-	virtual void Update(float dt) override
+	virtual void Update( const UpdateContext& inUpdateContext ) override
 	{
 	}
 

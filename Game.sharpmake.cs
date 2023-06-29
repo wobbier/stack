@@ -20,7 +20,14 @@ public class SharpGameSolution : BaseGameSolution
         : base()
     {
         Name = "Stack";
+        Globals.FMOD_Win64_Dir = "C:/Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/";
     }
+}
+
+[Generate]
+public class UserGameScript : GameScript
+{
+    public UserGameScript() : base() { }
 }
 
 [Generate]

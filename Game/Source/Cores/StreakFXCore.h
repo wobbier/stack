@@ -52,20 +52,20 @@ public:
 
 	}
 
-#if ME_EDITOR
+#if USING( ME_EDITOR )
 	virtual void OnEditorInspect() override
 	{
 
 	}
 #endif
 
-	virtual void Update(float dt) override
+	virtual void Update(const UpdateContext& dt) override
 	{
 		auto& ents = GetEntities();
 		for (auto& ent : ents)
 		{
 			Transform& trans = ent.GetComponent<Transform>();
-			trans.SetScale(trans.GetScale() + (6.f * dt));
+			trans.SetScale(trans.GetScale() + (6.f * dt.GetDeltaTime()));
 		}
 	}
 

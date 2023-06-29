@@ -19,8 +19,8 @@
 #include "Events/SceneEvents.h"
 #include "CLog.h"
 
-StackGame::StackGame(int argc, char** argv)
-	: Game(argc, argv)
+StackGame::StackGame( int argc, char** argv )
+	: Game( argc, argv )
 {
 }
 
@@ -32,14 +32,14 @@ void StackGame::OnStart()
 {
 }
 
-void StackGame::OnUpdate(float DeltaTime)
+void StackGame::OnUpdate( const UpdateContext& inUpdateContext )
 {
-	if (showDebugStuff)
+	if ( showDebugStuff )
 	{
-		ImGui::ShowDemoWindow(&showDebugStuff);
+		ImGui::ShowDemoWindow( &showDebugStuff );
 	}
 
-	if (GetEngine().GetInput().IsKeyDown(KeyCode::A) || GetEngine().GetInput().GetMousePosition().x > 0)
+	if ( GetEngine().GetInput().IsKeyDown( KeyCode::A ) || GetEngine().GetInput().GetMousePosition().x > 0 )
 	{
 		int i = 0;
 		++i;
@@ -52,7 +52,7 @@ void StackGame::OnEnd()
 
 void StackGame::OnInitialize()
 {
-	GetEngine().LoadScene("Assets/Test.lvl");
+	GetEngine().LoadScene( "Assets/Test.lvl" );
 }
 
 void StackGame::PostRender()
