@@ -1,13 +1,180 @@
 <html>
-  <head>
-    <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-    <div id="Score" class="animated fadeInUp">ssssssssss</div>
-    <div id="SpaceToPlay" class="animated fadeInUp">
-      Space to Playd
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="animate.min.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="jquery.min.js"></script>
+  <style>
+    body {
+      -webkit-text-select: none;
+      -webkit-user-select: none;
+    }
+
+    #CreditsButton {
+      background: rgba(0, 0, 0, 0.2);
+      position: absolute;
+      padding: 10px;
+      font-size: 2em;
+      left: 20px;
+      top: 20px;
+    }
+
+    #CreditsButton:hover {
+      text-decoration: underline;
+    }
+
+    #CreditsContainer {
+      position: fixed;
+      background: rgba(0, 0, 0, 0.5);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      //display: block;
+      display: none;
+    }
+
+    #Credits {
+      background: rgba(22, 22, 22, 0.801);
+      padding: 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -200px;
+      margin-left: -200px;
+      width: 400px;
+      height: 400px;
+      font-size: 3em;
+    }
+
+    .center-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    .divElement {}
+
+    /*
+    body {
+      cursor: none;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .small {
+      width: 6px;
+      height: 6px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+    }
+
+    .big {
+      width: 50px;
+      height: 50px;
+      background-color: white;
+      border-radius: 50%;
+      margin-bottom: 20rem;
+      animation-name: stretch;
+      animation-duration: 2.0s;
+      animation-timing-function: ease-out;
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+      animation-play-state: running;
+    }
+
+    @keyframes stretch {
+      0% {
+
+        opacity: 0.2;
+        background-color: green;
+        border-radius: 100%;
+      }
+
+      50% {
+        background-color: orange;
+      }
+
+      100% {
+        //transform: scale(2.0);
+        background-color: red;
+      }
+    }*/
+  </style>
+</head>
+
+<body>
+  <div id="Score" class="animated fadeInUp">Heap</div>
+  <div id="SpaceToPlay" class="animated fadeInUp">
+    <img src="Mouse_Left_Key_Light.png" /> or <img src="Space_Key_Light.png" /> to Start
+  </div>
+
+
+  <div class="wrap">
+    <a class="btn-6 bottomright" onclick="myFunction()"
+      onmouseenter="PlaySound('Assets/Sounds/UI.wav')">CREDITS<span></span></a>
+  </div>
+  <div id="CreditsContainer" onclick=" myFunction()">
+    <div id="Credits" class="divElement">
+      <h1>Credits</h1>
+      <hr>
+      Mitch Andrews
+      https://mitch.gg/
     </div>
-  </body>
+  </div>
+  <!--div class=" cursor small">
+        </div>
+        <div class="cursor big">
+          </div-->
+  <script>
+    // onmouseenter="PlaySound('Assets/Sounds/UI.wav')
+    function myFunction() {
+      PlaySound('Assets/Sounds/Select.wav');
+      var x = document.getElementById("CreditsContainer");
+      if (x.style.display === "none" || x.style.display === "") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+
+    const cursorSmall = document.querySelector('.small');
+    const cursorBig = document.querySelector('.big');
+
+
+    const positionElement = (e) => {
+      const mouseY = e.clientY;
+      const mouseX = e.clientX;
+
+      cursorSmall.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+
+      cursorBig.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+
+    }
+
+    window.addEventListener('mousemove', positionElement)
+
+    $(function () {
+      $('.btn-6')
+        .on('mouseenter', function (e) {
+          var parentOffset = $(this).offset(),
+            relX = e.pageX - parentOffset.left,
+            relY = e.pageY - parentOffset.top;
+          $(this).find('span').css({ top: relY, left: relX })
+        })
+        .on('mouseout', function (e) {
+          var parentOffset = $(this).offset(),
+            relX = e.pageX - parentOffset.left,
+            relY = e.pageY - parentOffset.top;
+          $(this).find('span').css({ top: relY, left: relX })
+        });
+    });
+
+
+  </script>
+</body>
+
 </html>

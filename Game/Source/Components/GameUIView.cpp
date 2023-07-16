@@ -24,11 +24,11 @@ void GameUIView::UpdateScore(unsigned int NewScore)
 	ExecuteScript("document.getElementById('Score').innerHTML='" + ((Score == 0) ? "HEAP" : std::to_string(Score)) + "';");
 	if (Score == 0)
 	{
-		ExecuteScript("document.getElementById('SpaceToPlay').innerHTML='Space to Play';");
+		ExecuteScript("document.getElementById('SpaceToPlay').style.display = 'block'; ");
 	}
 	else
 	{
-		ExecuteScript("document.getElementById('SpaceToPlay').innerHTML='';");
+		ExecuteScript("document.getElementById('SpaceToPlay').style.display = 'none';");
 	}
 }
 

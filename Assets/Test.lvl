@@ -17,19 +17,6 @@
         {
             "Components": [
                 {
-                    "ClearColor": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "ClearType": "Color",
-                    "Far": 2000.0,
-                    "IsCurrent": true,
-                    "Near": 0.10000000149011612,
-                    "Type": "Camera",
-                    "Zoom": 45.0
-                },
-                {
                     "Position": [
                         0.0,
                         0.0,
@@ -46,6 +33,19 @@
                         1.0
                     ],
                     "Type": "Transform"
+                },
+                {
+                    "ClearColor": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "ClearType": "Color",
+                    "Far": 2000.0,
+                    "IsCurrent": true,
+                    "Near": 0.10000000149011612,
+                    "Type": "Camera",
+                    "Zoom": 45.0
                 },
                 {
                     "FilePath": "Assets/Sounds/StackSound.wav",

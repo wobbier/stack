@@ -247,7 +247,7 @@ void APCore::SpawnNextBlock()
 		GenerateNextHue();
 
 
-		Camera::CurrentCamera->ClearColor = Darken( GetHue( testPercent / 100.f ), 0.20f );
+		Camera::CurrentCamera->ClearColor = Darken( GetHue( testPercent / 100.f ), 0.50f );
 
 		mesh.MeshMaterial->DiffuseColor = Darken( GetHue( blockPercent / 100.f ), 0.10f );
 		block.Color = mesh.MeshMaterial->DiffuseColor;
