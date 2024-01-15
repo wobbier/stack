@@ -22,6 +22,7 @@ public class SharpGameSolution : BaseGameSolution
         Name = "Stack";
         Globals.FMOD_Win64_Dir = "C:/Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/";
         Globals.UWP_Thumbprint = "65273d5258d72d2bb119efde93e2626cad8df28b";
+        Globals.MONO_Win64_Dir = "";
     }
 }
 
