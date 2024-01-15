@@ -13,10 +13,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2019]
-        buildconfig: [Editor_Release, Game_Win64_Release]
+        os: [windows-2022]
+        buildconfig: [Game_Win64, Editor]
+        configuration:
+          - Debug
+          - Release
+          - Retail
         include:
-          - os: windows-2019
+          - os: windows-2022
             shell: cmd
             compiler: cl
             target: Windows
@@ -29,6 +33,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+
+      - name: Install Mono
+        shell: cmd
+        run: choco install mono
 
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
@@ -51,7 +59,7 @@ jobs:
         run: cd Project && call GenerateSolution.bat && cd ../
         
       - name: Compile Tools
-        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64' }}
         shell: cmd
         run: msbuild Stack.sln /property:Configuration="Editor_Release"
 
@@ -87,7 +95,7 @@ jobs:
             .build/${{matrix.buildconfig}}/Tools/Win64/*.*
 
       - name: Cook Assets
-        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64' }}
         shell: cmd
         run: |
           cd ".build/Editor_Release/"
@@ -95,14 +103,14 @@ jobs:
           cd ../../
 
       - name: Copy Cooked Assets
-        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64' }}
         shell: cmd
         continue-on-error: true
         run: |
-          robocopy ".build/Editor_Release/Assets" ".build\\Game_Win64_Release\\Assets" *.* /w:0 /r:1 /v /E
+          robocopy ".build/Editor_Release/Assets" ".build\\Game_Win64\\Assets" *.* /w:0 /r:1 /v /E
 
       - name: Archive Build
-        if: ${{ matrix.buildconfig == 'Game_Win64_Release' }}
+        if: ${{ matrix.buildconfig == 'Game_Win64' }}
         uses: actions/upload-artifact@v2
         with:
           name: Stack v${{github.run_number}} - ${{matrix.buildconfig}}
