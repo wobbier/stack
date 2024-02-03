@@ -9,7 +9,9 @@ class GameUIView
 public:
 	GameUIView();
 
+#if USING( ME_UI )
 	virtual void OnUILoad(ultralight::JSObject& GlobalWindow, ultralight::View* Caller) final;
+#endif
 
 	void UpdateScore(unsigned int NewScore);
 	void SetMessage(const std::string& NewMessage);
@@ -19,8 +21,10 @@ public:
 #endif
 
 private:
-	int Score = 0;
+    int Score = 0;
+#if USING( ME_UI )
 	virtual void GetScore(const ultralight::JSObject& thisObject, const ultralight::JSArgs& args) final;
+#endif
 };
 
 ME_REGISTER_COMPONENT(GameUIView)

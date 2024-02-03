@@ -7,6 +7,7 @@ GameUIView::GameUIView()
 	FilePath = Path("Assets/UI/GameUI.html");
 }
 
+#if USING( ME_UI )
 void GameUIView::OnUILoad(ultralight::JSObject& GlobalWindow, ultralight::View* Caller)
 {
 	GlobalWindow["GetScore"] = BindJSCallback(&GameUIView::GetScore);
@@ -17,10 +18,13 @@ void GameUIView::GetScore(const ultralight::JSObject& thisObject, const ultralig
 {
 	//UpdateScore(Score);
 }
+#endif
 
 void GameUIView::UpdateScore(unsigned int NewScore)
 {
 	Score = NewScore;
+
+#if USING( ME_UI )
 	ExecuteScript("document.getElementById('Score').innerHTML='" + ((Score == 0) ? "HEAP" : std::to_string(Score)) + "';");
 	if (Score == 0)
 	{
@@ -30,11 +34,14 @@ void GameUIView::UpdateScore(unsigned int NewScore)
 	{
 		ExecuteScript("document.getElementById('SpaceToPlay').style.display = 'none';");
 	}
+#endif
 }
 
 void GameUIView::SetMessage(const std::string& NewMessage)
 {
+#if USING( ME_UI )
 	ExecuteScript("document.getElementById('Score').innerHTML='" + NewMessage + "';");
+#endif
 }
 
 #if USING( ME_EDITOR )

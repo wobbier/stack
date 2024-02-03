@@ -12,6 +12,7 @@ IntroUI::IntroUI()
 	FilePath = Path("Assets/UI/IntroUI.html");
 }
 
+#if USING( ME_UI )
 void IntroUI::OnUILoad(ultralight::JSObject& GlobalWindow, ultralight::View* Caller)
 {
 	GlobalWindow["LoadGame"] = BindJSCallback(&IntroUI::LoadGame);
@@ -26,6 +27,7 @@ void IntroUI::LoadGame(const ultralight::JSObject& thisObject, const ultralight:
 	evt.Level = news;
 	evt.Fire();
 }
+#endif
 
 #if USING( ME_EDITOR )
 
