@@ -55,6 +55,10 @@ void StackGame::OnInitialize()
 	GetEngine().LoadScene( "Assets/Test.lvl" );
 }
 
+void StackGame::PreRender()
+{
+}
+
 void StackGame::PostRender()
 {
 }
